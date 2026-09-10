@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "justflow"
-version = "0.1.0"
+version = "0.1.1"
 description = "Durable workflows defined in YAML and executed on Temporal"
 readme = "README.md"
 license = "Apache-2.0"
@@ -58,14 +58,14 @@ grpc = ["grpcio>=1.75.1,<2"]
 postgres = ["asyncpg>=0.31,<1"]
 redis = ["redis>=5.0,<9"]
 control = ["uvicorn>=0.30,<1"]
-admin = ["uvicorn>=0.30,<1", "justflow-admin>=0.1.0,<0.2"]
+admin = ["uvicorn>=0.30,<1", "justflow-admin>=0.1.1,<0.2"]
 all = [
     "asyncpg>=0.31,<1",
     "boto3>=1.36,<2",
     "grpcio>=1.75.1,<2",
     "redis>=5.0,<9",
     "uvicorn>=0.30,<1",
-    "justflow-admin>=0.1.0,<0.2",
+    "justflow-admin>=0.1.1,<0.2",
 ]
 dev = [
     "asyncpg>=0.29",

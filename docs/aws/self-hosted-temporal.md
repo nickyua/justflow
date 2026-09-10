@@ -1,6 +1,6 @@
 # First deployment: self-hosted Temporal on ECS/Fargate
 
-This plan covers the first AWS deployment of the 0.1.0 beta: private Temporal services on
+This plan covers the first AWS deployment of the 0.1.1 beta: private Temporal services on
 ECS/Fargate, with RDS PostgreSQL for persistence and SQL visibility. The example application uses
 daily schedules, SQS, HTTP, S3, and PostgreSQL, with optional gRPC.
 **The deployment has not yet been tested on AWS. Complete the acceptance checks below before
@@ -8,12 +8,12 @@ running production workloads.**
 
 ## Version and environment record
 
-Start with these candidate versions and digests, resolved on 2026-09-09. They still need to be
+Start with Justflow 0.1.1 and the infrastructure candidates resolved on 2026-09-09. They still need to be
 tested together in your environment. Mirror the verified images into ECR and record their digests.
 
 | Component | Candidate / required record |
 | --- | --- |
-| Justflow | `0.1.0`; exact application image digest and worker build ID |
+| Justflow | `0.1.1`; exact application image digest and worker build ID |
 | Temporal server | `temporalio/server:1.31.2@sha256:b5ecdb8282bededae2a10c36e8d862e27d0bc2d247fc73c5416025997ab4a1da` |
 | Schema tools | `temporalio/admin-tools:1.31.2@sha256:dbc5fcd6ee8f0f4d808bf765af9a87dea9d8a283abfdcfbd2fc148496ba66107` |
 | Temporal SQL schemas | Candidate PostgreSQL core `1.19`, visibility `1.14`; verify bundled migrations before applying |
@@ -206,7 +206,7 @@ Retain workers required by open histories. A Temporal image downgrade does not u
 follow the selected release's upgrade policy or restore into a separate compatible target. Test
 restoration before promising recovery objectives.
 
-After 0.1.0 publication, library fixes use 0.1.1 or the next normal version. Environment/host fixes
+After 0.1.1 publication, library fixes use 0.1.2 or the next normal version. Environment/host fixes
 get a new immutable application/deployment revision. Never overwrite a released wheel or image.
 Record who owns backups, on-call response, token renewal and deferred checks before admitting
 ordinary workloads.

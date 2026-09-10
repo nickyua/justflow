@@ -18,7 +18,7 @@ manages its definitions, and provides APIs to start and inspect runs.
 - Workflows that call HTTPS, gRPC, or SQS-backed services and use resources such as S3 and PostgreSQL.
 - Your own dashboard using the public API, or an installation with the optional admin panel.
 
-See the [changelog](CHANGELOG.md) for the full 0.1.0 feature list and beta limitations.
+See the [changelog](CHANGELOG.md) for the full feature list and beta limitations.
 
 ## Quickstart
 

@@ -4,7 +4,7 @@ Notable changes in public releases of Justflow.
 
 ## [Unreleased]
 
-## [0.1.0] — 2026-09-10
+## [0.1.1] — 2026-09-10
 
 Initial public beta release of `justflow` and the optional `justflow-admin`
 package. Supports CPython 3.11–3.14.

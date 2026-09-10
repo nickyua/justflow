@@ -75,7 +75,7 @@ also enforces global item, allocation-chunk, and invocation limits. `on_iteratio
 ```
 
 This is dynamic bounded fan-out with an implicit join. Static independent fork/join branches are
-not a 0.1.0 feature.
+not supported.
 
 ## Polling loops and durable waits
 

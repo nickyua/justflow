@@ -1,4 +1,4 @@
-# Upgrading to 0.1
+# Upgrading to 0.1.1
 
 ## Class declarations to typed providers
 
@@ -41,7 +41,7 @@ operator pause state and make an explicit decision for retained unscoped schedul
 
 ## Compatibility discipline
 
-### Queue response matching in 0.1.0
+### Queue response matching in 0.1.1
 
 The version 1 broker envelope stays unchanged. Receivers must echo `message_id` as `in_reply_to`
 and preserve `step_invocation_id`, workflow/run IDs, step name and action. Correlation IDs remain
@@ -49,10 +49,10 @@ tracing metadata and can differ from business request IDs, including in child wo
 
 | Worker | Relay | Compatibility |
 | --- | --- | --- |
-| Previous | Previous | Legacy matching; independent correlation IDs can strand a wait |
-| 0.1.0 | Previous | Legacy activity signal keys remain accepted |
-| 0.1.0 | 0.1.0 | Invocation matching, including old histories already waiting |
-| Previous | 0.1.0 | Unsupported; upgrade workers first |
+| Legacy | Legacy | Legacy matching; independent correlation IDs can strand a wait |
+| 0.1.1 | Legacy | Legacy activity signal keys remain accepted |
+| 0.1.1 | 0.1.1 | Invocation matching, including old histories already waiting |
+| Legacy | 0.1.1 | Unsupported; upgrade workers first |
 
 Upgrade all workers capable of receiving retained queue responses before upgrading relays.
 The `justflow-queue-invocation-response-v1` Temporal patch preserves legacy replay decisions.

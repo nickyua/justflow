@@ -4,10 +4,10 @@ build-backend = "hatchling.build"
 
 [project]
 name = "justflow-example-prime-stats"
-version = "0.1.0"
+version = "0.1.1"
 description = "Prime statistics example application for justflow"
 requires-python = ">=3.11"
-dependencies = ["justflow==0.1.0"]
+dependencies = ["justflow==0.1.1"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/prime_stats"]
