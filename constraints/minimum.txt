@@ -3,8 +3,8 @@ boto3==1.36.0
 grpcio==1.75.1
 httpx==0.26.0
 jsonschema==4.18.0
-justflow==0.1.0
-justflow-admin==0.1.0
+justflow==0.1.1
+justflow-admin==0.1.1
 pydantic==2.12.0
 pydantic-settings==2.1.0
 pyyaml==6.0.3

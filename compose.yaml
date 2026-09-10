@@ -7,7 +7,7 @@ x-runtime-environment: &runtime-environment
   JUSTFLOW_DEPLOYMENT__NAME: justflow-local
   JUSTFLOW_DEPLOYMENT__BUILD_ID: compose
   JUSTFLOW_DEPLOYMENT__ARTIFACT_DIGEST: local-development
-  JUSTFLOW_DEPLOYMENT__PACKAGE_VERSION: 0.1.0
+  JUSTFLOW_DEPLOYMENT__PACKAGE_VERSION: 0.1.1
   JUSTFLOW_CONFIGURATION__BACKEND: sqlite
   JUSTFLOW_CONFIGURATION__PATH: /var/lib/justflow/configuration.sqlite3
   JUSTFLOW_PATHS__CONFIG_DIR: /opt/justflow/config

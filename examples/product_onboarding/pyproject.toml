@@ -4,10 +4,10 @@ build-backend = "hatchling.build"
 
 [project]
 name = "justflow-example-product-onboarding"
-version = "0.1.0"
+version = "0.1.1"
 description = "API-driven product onboarding example for Justflow"
 requires-python = ">=3.11"
-dependencies = ["justflow==0.1.0"]
+dependencies = ["justflow==0.1.1"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/product_onboarding"]

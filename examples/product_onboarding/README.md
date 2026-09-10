@@ -31,7 +31,7 @@ JUSTFLOW_RUNTIME__PROFILE=local \
 JUSTFLOW_TEMPORAL__CONNECTION__MODE=local_plaintext \
 JUSTFLOW_DEPLOYMENT__BUILD_ID=product-onboarding-local \
 JUSTFLOW_DEPLOYMENT__ARTIFACT_DIGEST=local-development \
-JUSTFLOW_DEPLOYMENT__PACKAGE_VERSION=0.1.0-dev \
+JUSTFLOW_DEPLOYMENT__PACKAGE_VERSION=0.1.1-dev \
 .venv/bin/python -m justflow serve \
   --config-dir examples/product_onboarding/configs \
   --temporal-address 127.0.0.1:7233 \

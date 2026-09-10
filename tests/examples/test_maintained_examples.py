@@ -98,7 +98,7 @@ def test_maintained_example_has_valid_configuration_and_package(
         name: declaration.kind for name, declaration in triggers.triggers.items()
     } == case.trigger_kinds
     assert package["project"]["name"] == case.distribution_name
-    assert package["project"]["version"] == "0.1.0"
+    assert package["project"]["version"] == "0.1.1"
     assert "justflow" in package["project"]["dependencies"][0]
     assert "install" in readme.lower()
 
