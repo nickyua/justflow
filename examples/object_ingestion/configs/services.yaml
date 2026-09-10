@@ -1,0 +1,7 @@
+services:
+  object_service:
+    transport: direct
+    transport_config:
+      class: object_ingestion.actions.LocalObjectService
+    dispatch_timeout_sec: 10
+    retries: 0

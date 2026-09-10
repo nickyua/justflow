@@ -1,0 +1,5 @@
+triggers:
+  object_created:
+    kind: event
+    workflow: object_ingestion
+    mapping: s3_object_created

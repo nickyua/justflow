@@ -1,0 +1,47 @@
+workflow: scheduled_reporting
+description: Build and locally record a report for an explicitly supplied date.
+
+input_schema: scheduled_reporting.contracts.ReportRequest
+output_schema: scheduled_reporting.contracts.ReportArtifact
+result: create.report
+
+params:
+  report_date: "${report_date}"
+
+on_complete:
+  resource: audit_store
+  path: audit/scheduled-reporting/${request_id}.json
+  retention_policy: local-demo
+
+steps:
+  create_report:
+    target:
+      kind: service
+      service: reporting
+      action: create_report
+    required_resources:
+      - reporting_config
+    output_schema: scheduled_reporting.contracts.ReportArtifact
+
+  deliver_report:
+    target:
+      kind: service
+      service: reporting
+      action: deliver_report
+
+flow:
+  - name: create
+    op: create_report
+    input:
+      report_date: report_date
+    output: report
+    then: deliver
+
+  - name: deliver
+    op: deliver_report
+    input: create.report
+    output: delivery
+    then: done
+
+  - name: done
+    terminal: true

@@ -1,0 +1,76 @@
+/* Shared tooltip styles for the CLI visualization export and the panel graph frame. */
+.tooltip.pinned {
+    border: 1px solid #6366f1;
+    box-shadow: 0 8px 30px rgba(99, 102, 241, 0.35);
+}
+.tooltip {
+    position: fixed;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    padding: 1rem 1.25rem;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    max-width: 360px;
+    font-size: 0.85rem;
+}
+.tooltip.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+.tooltip .tt-header {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.tooltip .tt-badge {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+.tt-badge.step { background: #e0f2fe; color: #0369a1; }
+.tt-badge.terminal { background: #fde2e1; color: #b91c1c; }
+.tt-badge.iteration { background: #dbeafe; color: #1d4ed8; }
+.tt-badge.decision { background: #fef3c7; color: #92400e; }
+.tt-badge.action { background: #e0f2fe; color: #0c4a6e; }
+.tooltip .tt-row {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.2rem 0;
+    border-top: 1px solid var(--border);
+}
+.tooltip .tt-row:first-of-type { border-top: none; }
+.tooltip .tt-label {
+    color: var(--text-secondary);
+    font-weight: 500;
+    min-width: 70px;
+    flex-shrink: 0;
+}
+.tooltip .tt-value {
+    color: var(--text);
+    word-break: break-word;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.8rem;
+}
+
+/* Edge interactivity — override Mermaid's pointer-events: none */
+.edgePath {
+    pointer-events: all !important;
+}
+.edgePath .edge-hitarea {
+    pointer-events: stroke !important;
+    cursor: pointer;
+}
+.edgeLabel {
+    pointer-events: all !important;
+}

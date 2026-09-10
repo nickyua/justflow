@@ -1,0 +1,97 @@
+{
+  "version": "0.1.0",
+  "dynamodb": {
+    "configuration": {
+      "table_name": "${CONFIGURATION_TABLE}",
+      "billing_mode": "PAY_PER_REQUEST",
+      "partition_key": {"name": "scope_key", "type": "S"},
+      "sort_key": {"name": "metadata_key", "type": "S"},
+      "global_secondary_indexes": {
+        "revisions": {
+          "name": "${CONFIGURATION_REVISION_INDEX}",
+          "partition_key": {"name": "scope_digest", "type": "S"},
+          "sort_key": {"name": "revision_order", "type": "S"},
+          "projection": "ALL"
+        },
+        "activations": {
+          "name": "${CONFIGURATION_ACTIVATION_INDEX}",
+          "partition_key": {"name": "scope_digest", "type": "S"},
+          "sort_key": {"name": "activation_order", "type": "S"},
+          "projection": "ALL"
+        }
+      },
+      "point_in_time_recovery": true,
+      "deletion_protection": true,
+      "encryption": {
+        "type": "customer-managed-kms",
+        "key_arn": "${CONFIGURATION_KMS_KEY_ARN}"
+      }
+    },
+    "application": {
+      "optional": true,
+      "table_name": "${APPLICATION_STATE_TABLE}",
+      "billing_mode": "PAY_PER_REQUEST",
+      "partition_key": {"name": "entry_key", "type": "S"},
+      "value_attribute": "value",
+      "ttl_attribute": "expires_at",
+      "point_in_time_recovery": true,
+      "deletion_protection": true,
+      "encryption": {
+        "type": "customer-managed-kms",
+        "key_arn": "${APPLICATION_DATA_KMS_KEY_ARN}"
+      }
+    }
+  },
+  "redis": {
+    "deployment": "replication-group",
+    "engine": "valkey-or-redis",
+    "subnets": "private-data",
+    "public_access": false,
+    "port": 6379,
+    "cluster_mode": false,
+    "multi_az": true,
+    "automatic_failover": true,
+    "replicas_per_primary_minimum": 1,
+    "transit_encryption": true,
+    "at_rest_encryption": true,
+    "authentication": "token-or-user-group",
+    "endpoint": "${REDIS_PRIMARY_ENDPOINT}",
+    "connection_secret_arn": "${APPLICATION_REDIS_URL_SECRET_ARN}"
+  },
+  "postgres": {
+    "deployment": "aurora-postgresql-or-rds-postgresql",
+    "subnets": "private-data",
+    "public_access": false,
+    "port": 5432,
+    "multi_az": true,
+    "storage_encryption": true,
+    "tls_required": true,
+    "managed_master_secret": true,
+    "application_credentials_separate_from_master": true,
+    "backup_retention_days_minimum": 7,
+    "deletion_protection": true,
+    "endpoint": "${POSTGRES_WRITER_ENDPOINT}",
+    "runtime_connection_secret_arn": "${APPLICATION_POSTGRES_DSN_SECRET_ARN}",
+    "migration_connection_secret_arn": "${MIGRATION_POSTGRES_DSN_SECRET_ARN}"
+  },
+  "ecs_bindings": {
+    "gateway": {
+      "control_plane": ["configuration-dynamodb", "configuration-s3", "definition-s3"],
+      "application_data": [],
+      "connection_secrets": []
+    },
+    "worker": {
+      "control_plane": ["configuration-dynamodb", "configuration-s3", "definition-s3"],
+      "application_data": ["application-dynamodb", "redis", "postgres"],
+      "connection_secrets": [
+        "JUSTFLOW_RESOURCE_CONNECTIONS__POSTGRES_DSNS__application",
+        "JUSTFLOW_RESOURCE_CONNECTIONS__REDIS_URLS__application"
+      ]
+    },
+    "migration": {
+      "control_plane": [],
+      "application_data": ["postgres"],
+      "connection_secrets": ["APPLICATION_MIGRATION_POSTGRES_DSN"]
+    }
+  }
+}

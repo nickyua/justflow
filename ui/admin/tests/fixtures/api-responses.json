@@ -1,0 +1,65 @@
+{
+  "capabilities": {
+    "api_compatibility": {
+      "current_version": 1,
+      "minimum_supported_client_version": 1,
+      "maximum_supported_client_version": 1
+    },
+    "operations_view": true,
+    "scope": {
+      "tenant": "tenant-a",
+      "application": "orders",
+      "environment": "production"
+    },
+    "configuration_mode": "managed",
+    "configuration_view": true,
+    "configuration_edit": false,
+    "configuration_validate": true,
+    "configuration_apply": false,
+    "configuration_discard": true,
+    "configuration_publish": false,
+    "configuration_activate": false,
+    "configuration_rollback": false,
+    "workflow_start": true,
+    "workflow_signal": true,
+    "workflow_cancel": true,
+    "workflow_terminate": false,
+    "trigger_pause": true,
+    "trigger_resume": true,
+    "trigger_run": true,
+    "trigger_delete": false,
+    "scheduled_start_create": true,
+    "scheduled_start_view": true,
+    "scheduled_start_reschedule": false,
+    "scheduled_start_cancel": true,
+    "trigger_apply": false
+  },
+  "scheduled_start": {
+    "scheduled_start_id": "scheduled-start-opaque",
+    "workflow_name": "example",
+    "trigger_name": "example_api",
+    "start_at": "2026-08-12T10:00:00Z",
+    "workload_class": "standard",
+    "state": "started",
+    "version": 2,
+    "accepted_at": "2026-08-11T10:00:00Z",
+    "updated_at": "2026-08-12T10:00:01Z",
+    "dispatch_started_at": "2026-08-12T10:00:00Z",
+    "completed_at": "2026-08-12T10:00:01Z",
+    "failure_code": null,
+    "run": {
+      "workflow_id": "workflow-opaque",
+      "run_id": "run-opaque",
+      "definition_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "artifact_identity": {
+        "deployment_name": "orders",
+        "build_id": "build-1",
+        "artifact_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "package_version": "0.1.0",
+        "source_revision": "cccccccccccccccccccccccccccccccccccccccc"
+      },
+      "environment_snapshot_digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "execution_configuration": null
+    }
+  }
+}

@@ -1,0 +1,565 @@
+{
+  "$defs": {
+    "ApiTriggerDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "api",
+          "default": "api",
+          "title": "Kind",
+          "type": "string"
+        },
+        "paused": {
+          "default": false,
+          "title": "Paused",
+          "type": "boolean"
+        },
+        "workflow": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Workflow",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workflow"
+      ],
+      "title": "ApiTriggerDeclaration",
+      "type": "object"
+    },
+    "BackfillPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "max_actions": {
+          "default": 1000,
+          "maximum": 10000,
+          "minimum": 1,
+          "title": "Max Actions",
+          "type": "integer"
+        },
+        "max_window_seconds": {
+          "default": 86400,
+          "maximum": 31536000,
+          "minimum": 1,
+          "title": "Max Window Seconds",
+          "type": "integer"
+        }
+      },
+      "title": "BackfillPolicy",
+      "type": "object"
+    },
+    "BrokerTriggerDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "broker": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Broker",
+          "type": "string"
+        },
+        "kind": {
+          "const": "broker",
+          "default": "broker",
+          "title": "Kind",
+          "type": "string"
+        },
+        "paused": {
+          "default": false,
+          "title": "Paused",
+          "type": "boolean"
+        },
+        "workflow": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Workflow",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workflow",
+        "broker"
+      ],
+      "title": "BrokerTriggerDeclaration",
+      "type": "object"
+    },
+    "CalendarRange": {
+      "additionalProperties": false,
+      "properties": {
+        "end": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End"
+        },
+        "start": {
+          "title": "Start",
+          "type": "integer"
+        },
+        "step": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Step",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "start"
+      ],
+      "title": "CalendarRange",
+      "type": "object"
+    },
+    "CalendarScheduleSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "day_of_month": {
+          "default": [
+            {
+              "end": 31,
+              "start": 1,
+              "step": 1
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/CalendarRange"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Day Of Month",
+          "type": "array"
+        },
+        "day_of_week": {
+          "default": [
+            {
+              "end": 6,
+              "start": 0,
+              "step": 1
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/CalendarRange"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Day Of Week",
+          "type": "array"
+        },
+        "hour": {
+          "default": [
+            {
+              "end": null,
+              "start": 0,
+              "step": 1
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/CalendarRange"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Hour",
+          "type": "array"
+        },
+        "kind": {
+          "const": "calendar",
+          "default": "calendar",
+          "title": "Kind",
+          "type": "string"
+        },
+        "minute": {
+          "default": [
+            {
+              "end": null,
+              "start": 0,
+              "step": 1
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/CalendarRange"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Minute",
+          "type": "array"
+        },
+        "month": {
+          "default": [
+            {
+              "end": 12,
+              "start": 1,
+              "step": 1
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/CalendarRange"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Month",
+          "type": "array"
+        },
+        "second": {
+          "default": [
+            {
+              "end": null,
+              "start": 0,
+              "step": 1
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/CalendarRange"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Second",
+          "type": "array"
+        },
+        "year": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/CalendarRange"
+          },
+          "maxItems": 10,
+          "title": "Year",
+          "type": "array"
+        }
+      },
+      "title": "CalendarScheduleSpec",
+      "type": "object"
+    },
+    "CronScheduleSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "expressions": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Expressions",
+          "type": "array"
+        },
+        "kind": {
+          "const": "cron",
+          "default": "cron",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "expressions"
+      ],
+      "title": "CronScheduleSpec",
+      "type": "object"
+    },
+    "EventTriggerDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "event",
+          "default": "event",
+          "title": "Kind",
+          "type": "string"
+        },
+        "mapping": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Mapping",
+          "type": "string"
+        },
+        "paused": {
+          "default": false,
+          "title": "Paused",
+          "type": "boolean"
+        },
+        "workflow": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Workflow",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workflow",
+        "mapping"
+      ],
+      "title": "EventTriggerDeclaration",
+      "type": "object"
+    },
+    "HostTriggerDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "adapter": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Adapter",
+          "type": "string"
+        },
+        "kind": {
+          "const": "host",
+          "default": "host",
+          "title": "Kind",
+          "type": "string"
+        },
+        "paused": {
+          "default": false,
+          "title": "Paused",
+          "type": "boolean"
+        },
+        "workflow": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Workflow",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workflow",
+        "adapter"
+      ],
+      "title": "HostTriggerDeclaration",
+      "type": "object"
+    },
+    "IntervalScheduleSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "every_seconds": {
+          "maximum": 31536000,
+          "minimum": 1,
+          "title": "Every Seconds",
+          "type": "integer"
+        },
+        "kind": {
+          "const": "interval",
+          "default": "interval",
+          "title": "Kind",
+          "type": "string"
+        },
+        "offset_seconds": {
+          "default": 0,
+          "maximum": 31536000,
+          "minimum": 0,
+          "title": "Offset Seconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "every_seconds"
+      ],
+      "title": "IntervalScheduleSpec",
+      "type": "object"
+    },
+    "ScheduleOverlapPolicy": {
+      "enum": [
+        "skip",
+        "buffer_one",
+        "buffer_all",
+        "cancel_other",
+        "terminate_other",
+        "allow_all"
+      ],
+      "title": "ScheduleOverlapPolicy",
+      "type": "string"
+    },
+    "ScheduleTriggerDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "backfill": {
+          "$ref": "#/$defs/BackfillPolicy"
+        },
+        "catch_up_window_seconds": {
+          "default": 60,
+          "maximum": 31536000,
+          "minimum": 10,
+          "title": "Catch Up Window Seconds",
+          "type": "integer"
+        },
+        "definition_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Definition Digest"
+        },
+        "input": {
+          "additionalProperties": true,
+          "title": "Input",
+          "type": "object"
+        },
+        "kind": {
+          "const": "schedule",
+          "default": "schedule",
+          "title": "Kind",
+          "type": "string"
+        },
+        "overlap_policy": {
+          "$ref": "#/$defs/ScheduleOverlapPolicy",
+          "default": "skip"
+        },
+        "paused": {
+          "default": false,
+          "title": "Paused",
+          "type": "boolean"
+        },
+        "spec": {
+          "discriminator": {
+            "mapping": {
+              "calendar": "#/$defs/CalendarScheduleSpec",
+              "cron": "#/$defs/CronScheduleSpec",
+              "interval": "#/$defs/IntervalScheduleSpec"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/CronScheduleSpec"
+            },
+            {
+              "$ref": "#/$defs/IntervalScheduleSpec"
+            },
+            {
+              "$ref": "#/$defs/CalendarScheduleSpec"
+            }
+          ],
+          "title": "Spec"
+        },
+        "timezone": {
+          "default": "UTC",
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Timezone",
+          "type": "string"
+        },
+        "workflow": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Workflow",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workflow",
+        "spec"
+      ],
+      "title": "ScheduleTriggerDeclaration",
+      "type": "object"
+    },
+    "WebhookTriggerDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "webhook",
+          "default": "webhook",
+          "title": "Kind",
+          "type": "string"
+        },
+        "paused": {
+          "default": false,
+          "title": "Paused",
+          "type": "boolean"
+        },
+        "source": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Source",
+          "type": "string"
+        },
+        "workflow": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Workflow",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workflow",
+        "source"
+      ],
+      "title": "WebhookTriggerDeclaration",
+      "type": "object"
+    }
+  },
+  "$id": "https://justflow.dev/schemas/0.1.0/triggers.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "triggers": {
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[A-Za-z_][A-Za-z0-9_]*$": {
+          "discriminator": {
+            "mapping": {
+              "api": "#/$defs/ApiTriggerDeclaration",
+              "broker": "#/$defs/BrokerTriggerDeclaration",
+              "event": "#/$defs/EventTriggerDeclaration",
+              "host": "#/$defs/HostTriggerDeclaration",
+              "schedule": "#/$defs/ScheduleTriggerDeclaration",
+              "webhook": "#/$defs/WebhookTriggerDeclaration"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ApiTriggerDeclaration"
+            },
+            {
+              "$ref": "#/$defs/ScheduleTriggerDeclaration"
+            },
+            {
+              "$ref": "#/$defs/WebhookTriggerDeclaration"
+            },
+            {
+              "$ref": "#/$defs/EventTriggerDeclaration"
+            },
+            {
+              "$ref": "#/$defs/BrokerTriggerDeclaration"
+            },
+            {
+              "$ref": "#/$defs/HostTriggerDeclaration"
+            }
+          ]
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+        "title": "Workflow",
+        "type": "string"
+      },
+      "title": "Triggers",
+      "type": "object"
+    }
+  },
+  "required": [
+    "triggers"
+  ],
+  "title": "Justflow triggers.yaml",
+  "type": "object"
+}

@@ -1,0 +1,24 @@
+resources:
+  application_state:
+    provider: dynamodb
+    config:
+      region: ${AWS_REGION}
+      table_name: ${APPLICATION_STATE_TABLE}
+      partition_key: entry_key
+      value_attribute: value
+      ttl_attribute: expires_at
+      key_prefix: "${ENVIRONMENT_ID}:"
+
+  application_postgres:
+    provider: postgresql
+    config:
+      connection:
+        runtime_dsn: application
+
+  application_cache:
+    provider: redis
+    config:
+      connection:
+        runtime_url: application
+        require_tls: true
+      key_prefix: "${ENVIRONMENT_ID}:"

@@ -1,0 +1,1 @@
+"""Prime statistics example application."""

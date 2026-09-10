@@ -1,0 +1,33 @@
+{
+  "version": "0.1.0",
+  "status": "not_run",
+  "environment": null,
+  "operator": null,
+  "recorded_at": null,
+  "source_revision": null,
+  "application_image_digest": null,
+  "worker_build_id": null,
+  "temporal_server_image_digest": null,
+  "temporal_schema_tool_image_digest": null,
+  "temporal_sdk_version": null,
+  "postgres_engine_version": null,
+  "core_schema_version": null,
+  "visibility_schema_version": null,
+  "rendered_configuration_hash": null,
+  "previous_working_revision": null,
+  "checks": {
+    "api_browser_and_scope": {"status": "not_run", "evidence": null},
+    "temporal_authentication": {"status": "not_run", "evidence": null},
+    "managed_activation_and_rollback": {"status": "not_run", "evidence": null},
+    "daily_batch_and_customer_children": {"status": "not_run", "evidence": null},
+    "sqs_duplicate_and_failure_recovery": {"status": "not_run", "evidence": null},
+    "http_s3_postgres_limits_and_cleanup": {"status": "not_run", "evidence": null},
+    "iam_positive_and_negative": {"status": "not_run", "evidence": null},
+    "gateway_responsiveness": {"status": "not_run", "evidence": null},
+    "worker_deployment_and_priority": {"status": "not_run", "evidence": null},
+    "restart_continuation_and_replay": {"status": "not_run", "evidence": null},
+    "backup_restore": {"status": "not_run", "evidence": null},
+    "grpc_if_enabled": {"status": "not_run", "evidence": null},
+    "future_start_quota_if_enabled": {"status": "not_run", "evidence": null}
+  }
+}

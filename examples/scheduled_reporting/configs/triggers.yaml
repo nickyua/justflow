@@ -1,0 +1,18 @@
+triggers:
+  daily_reporting:
+    kind: schedule
+    workflow: scheduled_reporting
+    input:
+      report_date: "2026-08-10"
+    spec:
+      kind: cron
+      expressions:
+        - 0 9 * * *
+    timezone: Europe/Zurich
+    overlap_policy: buffer_one
+    catch_up_window_seconds: 3600
+    paused: true
+    backfill:
+      enabled: true
+      max_window_seconds: 604800
+      max_actions: 7

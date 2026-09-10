@@ -1,0 +1,996 @@
+{
+  "$defs": {
+    "ApprovedFullAuditCapture": {
+      "additionalProperties": false,
+      "properties": {
+        "max_payload_bytes": {
+          "minimum": 1,
+          "title": "Max Payload Bytes",
+          "type": "integer"
+        },
+        "mode": {
+          "const": "approved-full",
+          "default": "approved-full",
+          "title": "Mode",
+          "type": "string"
+        }
+      },
+      "required": [
+        "max_payload_bytes"
+      ],
+      "title": "ApprovedFullAuditCapture",
+      "type": "object"
+    },
+    "CacheConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Key",
+          "type": "string"
+        },
+        "resource": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Resource",
+          "type": "string"
+        },
+        "ttl_sec": {
+          "anyOf": [
+            {
+              "maximum": 31536000,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ttl Sec"
+        }
+      },
+      "required": [
+        "resource",
+        "key"
+      ],
+      "title": "CacheConfig",
+      "type": "object"
+    },
+    "ComponentReference": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z][A-Za-z0-9._-]*$",
+          "title": "Name",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "title": "ComponentReference",
+      "type": "object"
+    },
+    "EvaluatorCondition": {
+      "additionalProperties": false,
+      "properties": {
+        "evaluator": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Evaluator",
+          "type": "string"
+        },
+        "resources": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+            "type": "string"
+          },
+          "title": "Resources",
+          "type": "array"
+        }
+      },
+      "required": [
+        "evaluator"
+      ],
+      "title": "EvaluatorCondition",
+      "type": "object"
+    },
+    "FlowStep": {
+      "additionalProperties": false,
+      "properties": {
+        "as": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "As"
+        },
+        "condition": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Condition"
+        },
+        "for_each": {
+          "anyOf": [
+            {
+              "maxLength": 4257,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,127}(?:\\.(?:[A-Za-z_][A-Za-z0-9_]{0,127}|0|[1-9][0-9]{0,127})){0,32}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "For Each"
+        },
+        "input": {
+          "anyOf": [
+            {
+              "maxLength": 4257,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,127}(?:\\.(?:[A-Za-z_][A-Za-z0-9_]{0,127}|0|[1-9][0-9]{0,127})){0,32}$",
+              "type": "string"
+            },
+            {
+              "additionalProperties": {
+                "maxLength": 4257,
+                "minLength": 1,
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,127}(?:\\.(?:[A-Za-z_][A-Za-z0-9_]{0,127}|0|[1-9][0-9]{0,127})){0,32}$",
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "items": {
+                "maxLength": 4257,
+                "minLength": 1,
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,127}(?:\\.(?:[A-Za-z_][A-Za-z0-9_]{0,127}|0|[1-9][0-9]{0,127})){0,32}$",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Input"
+        },
+        "interval_sec": {
+          "anyOf": [
+            {
+              "maximum": 31536000,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Interval Sec"
+        },
+        "max_concurrency": {
+          "anyOf": [
+            {
+              "maximum": 1000,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Concurrency"
+        },
+        "max_iterations": {
+          "anyOf": [
+            {
+              "maximum": 10000,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Iterations"
+        },
+        "name": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Name",
+          "type": "string"
+        },
+        "on_exhausted": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "On Exhausted"
+        },
+        "on_failure": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "On Failure"
+        },
+        "on_iteration_fail": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/IterationFailStrategy"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "on_result": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/OnResultBranch"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "On Result"
+        },
+        "op": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Op"
+        },
+        "output": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Output"
+        },
+        "parallel": {
+          "default": false,
+          "title": "Parallel",
+          "type": "boolean"
+        },
+        "params": {
+          "additionalProperties": true,
+          "title": "Params",
+          "type": "object"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "sleep_sec": {
+          "anyOf": [
+            {
+              "maximum": 31536000,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sleep Sec"
+        },
+        "terminal": {
+          "default": false,
+          "title": "Terminal",
+          "type": "boolean"
+        },
+        "then": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Then"
+        },
+        "until": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Until"
+        },
+        "wait_for": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WaitForConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "FlowStep",
+      "type": "object"
+    },
+    "IterationFailStrategy": {
+      "enum": [
+        "stop",
+        "skip",
+        "collect"
+      ],
+      "title": "IterationFailStrategy",
+      "type": "string"
+    },
+    "MetadataOnlyAuditCapture": {
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "const": "metadata-only",
+          "default": "metadata-only",
+          "title": "Mode",
+          "type": "string"
+        }
+      },
+      "title": "MetadataOnlyAuditCapture",
+      "type": "object"
+    },
+    "OnCompleteConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "capture": {
+          "discriminator": {
+            "mapping": {
+              "approved-full": "#/$defs/ApprovedFullAuditCapture",
+              "metadata-only": "#/$defs/MetadataOnlyAuditCapture",
+              "redacted": "#/$defs/RedactedAuditCapture"
+            },
+            "propertyName": "mode"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MetadataOnlyAuditCapture"
+            },
+            {
+              "$ref": "#/$defs/RedactedAuditCapture"
+            },
+            {
+              "$ref": "#/$defs/ApprovedFullAuditCapture"
+            }
+          ],
+          "title": "Capture"
+        },
+        "path": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "resource": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Resource",
+          "type": "string"
+        },
+        "retention_policy": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Retention Policy",
+          "type": "string"
+        }
+      },
+      "required": [
+        "resource",
+        "path",
+        "retention_policy"
+      ],
+      "title": "OnCompleteConfig",
+      "type": "object"
+    },
+    "OnErrorConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "then": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Then",
+          "type": "string"
+        }
+      },
+      "required": [
+        "then"
+      ],
+      "title": "OnErrorConfig",
+      "type": "object"
+    },
+    "OnResultBranch": {
+      "additionalProperties": false,
+      "properties": {
+        "default": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Default"
+        },
+        "then": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Then"
+        },
+        "when": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/EvaluatorCondition"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "When"
+        }
+      },
+      "title": "OnResultBranch",
+      "type": "object"
+    },
+    "RedactedAuditCapture": {
+      "additionalProperties": false,
+      "properties": {
+        "max_payload_bytes": {
+          "minimum": 1,
+          "title": "Max Payload Bytes",
+          "type": "integer"
+        },
+        "mode": {
+          "const": "redacted",
+          "default": "redacted",
+          "title": "Mode",
+          "type": "string"
+        },
+        "paths": {
+          "items": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 1000,
+          "minItems": 1,
+          "title": "Paths",
+          "type": "array"
+        }
+      },
+      "required": [
+        "paths",
+        "max_payload_bytes"
+      ],
+      "title": "RedactedAuditCapture",
+      "type": "object"
+    },
+    "TenantComponentOperation": {
+      "additionalProperties": false,
+      "properties": {
+        "cache": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CacheConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "component": {
+          "$ref": "#/$defs/ComponentReference"
+        },
+        "kind": {
+          "const": "component",
+          "default": "component",
+          "title": "Kind",
+          "type": "string"
+        },
+        "parameters": {
+          "additionalProperties": true,
+          "title": "Parameters",
+          "type": "object"
+        },
+        "resource_bindings": {
+          "maxProperties": 100,
+          "patternProperties": {
+            "^[A-Za-z_][A-Za-z0-9_]*$": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "type": "string"
+            }
+          },
+          "propertyNames": {
+            "maxLength": 128,
+            "minLength": 1
+          },
+          "title": "Resource Bindings",
+          "type": "object"
+        },
+        "service_binding": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Service Binding",
+          "type": "string"
+        }
+      },
+      "required": [
+        "component",
+        "service_binding"
+      ],
+      "title": "TenantComponentOperation",
+      "type": "object"
+    },
+    "TenantTriggerDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "binding_alias": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Binding Alias",
+          "type": "string"
+        },
+        "component": {
+          "$ref": "#/$defs/ComponentReference"
+        },
+        "kind": {
+          "$ref": "#/$defs/TriggerKind"
+        },
+        "parameters": {
+          "additionalProperties": true,
+          "title": "Parameters",
+          "type": "object"
+        },
+        "paused": {
+          "default": false,
+          "title": "Paused",
+          "type": "boolean"
+        },
+        "resource_bindings": {
+          "maxProperties": 100,
+          "patternProperties": {
+            "^[A-Za-z_][A-Za-z0-9_]*$": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "type": "string"
+            }
+          },
+          "propertyNames": {
+            "maxLength": 128,
+            "minLength": 1
+          },
+          "title": "Resource Bindings",
+          "type": "object"
+        },
+        "workflow": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Workflow",
+          "type": "string"
+        }
+      },
+      "required": [
+        "component",
+        "kind",
+        "workflow",
+        "binding_alias"
+      ],
+      "title": "TenantTriggerDeclaration",
+      "type": "object"
+    },
+    "TenantWorkflowConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "default": "",
+          "maxLength": 4096,
+          "title": "Description",
+          "type": "string"
+        },
+        "flow": {
+          "items": {
+            "$ref": "#/$defs/FlowStep"
+          },
+          "minItems": 1,
+          "title": "Flow",
+          "type": "array"
+        },
+        "input_schema": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Input Schema"
+        },
+        "on_complete": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OnCompleteConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "on_error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OnErrorConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "output_schema": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Output Schema"
+        },
+        "params": {
+          "patternProperties": {
+            "^[A-Za-z_][A-Za-z0-9_]*$": {
+              "type": "string"
+            }
+          },
+          "propertyNames": {
+            "maxLength": 128,
+            "minLength": 1
+          },
+          "title": "Params",
+          "type": "object"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "maxLength": 4257,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,127}(?:\\.(?:[A-Za-z_][A-Za-z0-9_]{0,127}|0|[1-9][0-9]{0,127})){0,32}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Result"
+        },
+        "steps": {
+          "patternProperties": {
+            "^[A-Za-z_][A-Za-z0-9_]*$": {
+              "discriminator": {
+                "mapping": {
+                  "component": "#/$defs/TenantComponentOperation",
+                  "workflow": "#/$defs/TenantWorkflowOperation"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/TenantComponentOperation"
+                },
+                {
+                  "$ref": "#/$defs/TenantWorkflowOperation"
+                }
+              ]
+            }
+          },
+          "propertyNames": {
+            "maxLength": 128,
+            "minLength": 1
+          },
+          "title": "Steps",
+          "type": "object"
+        },
+        "workflow": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Workflow",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workflow",
+        "steps",
+        "flow"
+      ],
+      "title": "TenantWorkflowConfig",
+      "type": "object"
+    },
+    "TenantWorkflowOperation": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "workflow",
+          "default": "workflow",
+          "title": "Kind",
+          "type": "string"
+        },
+        "workflow": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Workflow",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workflow"
+      ],
+      "title": "TenantWorkflowOperation",
+      "type": "object"
+    },
+    "TriggerKind": {
+      "enum": [
+        "api",
+        "schedule",
+        "webhook",
+        "event",
+        "broker",
+        "host"
+      ],
+      "title": "TriggerKind",
+      "type": "string"
+    },
+    "WaitForConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "on_timeout": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "On Timeout"
+        },
+        "signal": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Signal",
+          "type": "string"
+        },
+        "timeout_sec": {
+          "anyOf": [
+            {
+              "maximum": 31536000,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Timeout Sec"
+        },
+        "timeout_until": {
+          "anyOf": [
+            {
+              "maxLength": 4257,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,127}(?:\\.(?:[A-Za-z_][A-Za-z0-9_]{0,127}|0|[1-9][0-9]{0,127})){0,32}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Reference resolved at runtime to epoch seconds or an ISO-8601 timestamp with 'Z' or an explicit UTC offset",
+          "title": "Timeout Until"
+        }
+      },
+      "required": [
+        "signal"
+      ],
+      "title": "WaitForConfig",
+      "type": "object"
+    }
+  },
+  "$id": "https://justflow.dev/schemas/0.1.0/tenant-configuration.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "component_catalog_revision": {
+      "maxLength": 64,
+      "minLength": 64,
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Component Catalog Revision",
+      "type": "string"
+    },
+    "triggers": {
+      "patternProperties": {
+        "^[A-Za-z_][A-Za-z0-9_]*$": {
+          "$ref": "#/$defs/TenantTriggerDeclaration"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "minLength": 1
+      },
+      "title": "Triggers",
+      "type": "object"
+    },
+    "workflows": {
+      "patternProperties": {
+        "^[A-Za-z_][A-Za-z0-9_]*$": {
+          "$ref": "#/$defs/TenantWorkflowConfig"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "minLength": 1
+      },
+      "title": "Workflows",
+      "type": "object"
+    }
+  },
+  "required": [
+    "component_catalog_revision",
+    "workflows",
+    "triggers"
+  ],
+  "title": "Justflow tenant configuration",
+  "type": "object"
+}

@@ -1,0 +1,36 @@
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+dist/
+example-dist/
+build/
+.env
+.DS_Store
+
+# Generated visualization artifacts
+workflow.html
+
+examples/**/*.html
+/examples_internal/
+
+.codegraph
+graphify-out/
+.claude/settings.local.json
+specs/
+temp/
+site/
+/docs/scheduling-workflows-spec.md
+
+# Administration panel tool output
+ui/admin/node_modules/
+ui/admin/coverage/
+.justflow/
+# The built panel bundle under packages/justflow-admin is covered by the dist/
+# rule above. It ships in the optional wheel via Hatch build artifacts.
+/CHANGELOG_private.md

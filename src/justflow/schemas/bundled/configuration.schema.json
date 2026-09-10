@@ -1,0 +1,3048 @@
+{
+  "$defs": {
+    "ApiTriggerDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "api",
+          "default": "api",
+          "title": "Kind",
+          "type": "string"
+        },
+        "paused": {
+          "default": false,
+          "title": "Paused",
+          "type": "boolean"
+        },
+        "workflow": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Workflow",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workflow"
+      ],
+      "title": "ApiTriggerDeclaration",
+      "type": "object"
+    },
+    "BackfillPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "max_actions": {
+          "default": 1000,
+          "maximum": 10000,
+          "minimum": 1,
+          "title": "Max Actions",
+          "type": "integer"
+        },
+        "max_window_seconds": {
+          "default": 86400,
+          "maximum": 31536000,
+          "minimum": 1,
+          "title": "Max Window Seconds",
+          "type": "integer"
+        }
+      },
+      "title": "BackfillPolicy",
+      "type": "object"
+    },
+    "BrokerTriggerDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "broker": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Broker",
+          "type": "string"
+        },
+        "kind": {
+          "const": "broker",
+          "default": "broker",
+          "title": "Kind",
+          "type": "string"
+        },
+        "paused": {
+          "default": false,
+          "title": "Paused",
+          "type": "boolean"
+        },
+        "workflow": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Workflow",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workflow",
+        "broker"
+      ],
+      "title": "BrokerTriggerDeclaration",
+      "type": "object"
+    },
+    "CalendarRange": {
+      "additionalProperties": false,
+      "properties": {
+        "end": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End"
+        },
+        "start": {
+          "title": "Start",
+          "type": "integer"
+        },
+        "step": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Step",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "start"
+      ],
+      "title": "CalendarRange",
+      "type": "object"
+    },
+    "CalendarScheduleSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "day_of_month": {
+          "default": [
+            {
+              "end": 31,
+              "start": 1,
+              "step": 1
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/CalendarRange"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Day Of Month",
+          "type": "array"
+        },
+        "day_of_week": {
+          "default": [
+            {
+              "end": 6,
+              "start": 0,
+              "step": 1
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/CalendarRange"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Day Of Week",
+          "type": "array"
+        },
+        "hour": {
+          "default": [
+            {
+              "end": null,
+              "start": 0,
+              "step": 1
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/CalendarRange"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Hour",
+          "type": "array"
+        },
+        "kind": {
+          "const": "calendar",
+          "default": "calendar",
+          "title": "Kind",
+          "type": "string"
+        },
+        "minute": {
+          "default": [
+            {
+              "end": null,
+              "start": 0,
+              "step": 1
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/CalendarRange"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Minute",
+          "type": "array"
+        },
+        "month": {
+          "default": [
+            {
+              "end": 12,
+              "start": 1,
+              "step": 1
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/CalendarRange"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Month",
+          "type": "array"
+        },
+        "second": {
+          "default": [
+            {
+              "end": null,
+              "start": 0,
+              "step": 1
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/CalendarRange"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Second",
+          "type": "array"
+        },
+        "year": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/CalendarRange"
+          },
+          "maxItems": 10,
+          "title": "Year",
+          "type": "array"
+        }
+      },
+      "title": "CalendarScheduleSpec",
+      "type": "object"
+    },
+    "CronScheduleSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "expressions": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Expressions",
+          "type": "array"
+        },
+        "kind": {
+          "const": "cron",
+          "default": "cron",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "expressions"
+      ],
+      "title": "CronScheduleSpec",
+      "type": "object"
+    },
+    "EventTriggerDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "event",
+          "default": "event",
+          "title": "Kind",
+          "type": "string"
+        },
+        "mapping": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Mapping",
+          "type": "string"
+        },
+        "paused": {
+          "default": false,
+          "title": "Paused",
+          "type": "boolean"
+        },
+        "workflow": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Workflow",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workflow",
+        "mapping"
+      ],
+      "title": "EventTriggerDeclaration",
+      "type": "object"
+    },
+    "HostTriggerDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "adapter": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Adapter",
+          "type": "string"
+        },
+        "kind": {
+          "const": "host",
+          "default": "host",
+          "title": "Kind",
+          "type": "string"
+        },
+        "paused": {
+          "default": false,
+          "title": "Paused",
+          "type": "boolean"
+        },
+        "workflow": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Workflow",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workflow",
+        "adapter"
+      ],
+      "title": "HostTriggerDeclaration",
+      "type": "object"
+    },
+    "IntervalScheduleSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "every_seconds": {
+          "maximum": 31536000,
+          "minimum": 1,
+          "title": "Every Seconds",
+          "type": "integer"
+        },
+        "kind": {
+          "const": "interval",
+          "default": "interval",
+          "title": "Kind",
+          "type": "string"
+        },
+        "offset_seconds": {
+          "default": 0,
+          "maximum": 31536000,
+          "minimum": 0,
+          "title": "Offset Seconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "every_seconds"
+      ],
+      "title": "IntervalScheduleSpec",
+      "type": "object"
+    },
+    "ScheduleOverlapPolicy": {
+      "enum": [
+        "skip",
+        "buffer_one",
+        "buffer_all",
+        "cancel_other",
+        "terminate_other",
+        "allow_all"
+      ],
+      "title": "ScheduleOverlapPolicy",
+      "type": "string"
+    },
+    "ScheduleTriggerDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "backfill": {
+          "$ref": "#/$defs/BackfillPolicy"
+        },
+        "catch_up_window_seconds": {
+          "default": 60,
+          "maximum": 31536000,
+          "minimum": 10,
+          "title": "Catch Up Window Seconds",
+          "type": "integer"
+        },
+        "definition_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Definition Digest"
+        },
+        "input": {
+          "additionalProperties": true,
+          "title": "Input",
+          "type": "object"
+        },
+        "kind": {
+          "const": "schedule",
+          "default": "schedule",
+          "title": "Kind",
+          "type": "string"
+        },
+        "overlap_policy": {
+          "$ref": "#/$defs/ScheduleOverlapPolicy",
+          "default": "skip"
+        },
+        "paused": {
+          "default": false,
+          "title": "Paused",
+          "type": "boolean"
+        },
+        "spec": {
+          "discriminator": {
+            "mapping": {
+              "calendar": "#/$defs/CalendarScheduleSpec",
+              "cron": "#/$defs/CronScheduleSpec",
+              "interval": "#/$defs/IntervalScheduleSpec"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/CronScheduleSpec"
+            },
+            {
+              "$ref": "#/$defs/IntervalScheduleSpec"
+            },
+            {
+              "$ref": "#/$defs/CalendarScheduleSpec"
+            }
+          ],
+          "title": "Spec"
+        },
+        "timezone": {
+          "default": "UTC",
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Timezone",
+          "type": "string"
+        },
+        "workflow": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Workflow",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workflow",
+        "spec"
+      ],
+      "title": "ScheduleTriggerDeclaration",
+      "type": "object"
+    },
+    "WebhookTriggerDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "webhook",
+          "default": "webhook",
+          "title": "Kind",
+          "type": "string"
+        },
+        "paused": {
+          "default": false,
+          "title": "Paused",
+          "type": "boolean"
+        },
+        "source": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Source",
+          "type": "string"
+        },
+        "workflow": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Workflow",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workflow",
+        "source"
+      ],
+      "title": "WebhookTriggerDeclaration",
+      "type": "object"
+    },
+    "resource_aws_secrets_manager_config": {
+      "$defs": {
+        "SecretsManagerSelection": {
+          "additionalProperties": false,
+          "properties": {
+            "secret_id": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "title": "Secret Id",
+              "type": "string"
+            },
+            "version_id": {
+              "anyOf": [
+                {
+                  "maxLength": 2048,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Version Id"
+            },
+            "version_stage": {
+              "anyOf": [
+                {
+                  "maxLength": 2048,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Version Stage"
+            }
+          },
+          "required": [
+            "secret_id"
+          ],
+          "title": "SecretsManagerSelection",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "endpoint_url": {
+          "anyOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Endpoint Url"
+        },
+        "max_value_bytes": {
+          "default": 65536,
+          "maximum": 1048576,
+          "minimum": 1,
+          "title": "Max Value Bytes",
+          "type": "integer"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region"
+        },
+        "secrets": {
+          "maxProperties": 256,
+          "minProperties": 1,
+          "patternProperties": {
+            "^[A-Za-z_][A-Za-z0-9_]*$": {
+              "$ref": "#/$defs/resource_aws_secrets_manager_config/$defs/SecretsManagerSelection"
+            }
+          },
+          "propertyNames": {
+            "maxLength": 128,
+            "minLength": 1
+          },
+          "title": "Secrets",
+          "type": "object"
+        }
+      },
+      "required": [
+        "secrets"
+      ],
+      "title": "SecretsManagerConfig",
+      "type": "object"
+    },
+    "resource_aws_ssm_config": {
+      "$defs": {
+        "ParameterSelection": {
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "title": "Name",
+              "type": "string"
+            },
+            "version": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Version"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "title": "ParameterSelection",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "endpoint_url": {
+          "anyOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Endpoint Url"
+        },
+        "max_value_bytes": {
+          "default": 65536,
+          "maximum": 1048576,
+          "minimum": 1,
+          "title": "Max Value Bytes",
+          "type": "integer"
+        },
+        "parameters": {
+          "maxProperties": 256,
+          "minProperties": 1,
+          "patternProperties": {
+            "^[A-Za-z_][A-Za-z0-9_]*$": {
+              "$ref": "#/$defs/resource_aws_ssm_config/$defs/ParameterSelection"
+            }
+          },
+          "propertyNames": {
+            "maxLength": 128,
+            "minLength": 1
+          },
+          "title": "Parameters",
+          "type": "object"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region"
+        }
+      },
+      "required": [
+        "parameters"
+      ],
+      "title": "ParameterStoreConfig",
+      "type": "object"
+    },
+    "resource_dynamodb_config": {
+      "additionalProperties": false,
+      "properties": {
+        "endpoint_url": {
+          "anyOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Endpoint Url"
+        },
+        "key_prefix": {
+          "default": "",
+          "maxLength": 2048,
+          "title": "Key Prefix",
+          "type": "string"
+        },
+        "max_value_bytes": {
+          "default": 409600,
+          "maximum": 409600,
+          "minimum": 1,
+          "title": "Max Value Bytes",
+          "type": "integer"
+        },
+        "partition_key": {
+          "maxLength": 255,
+          "minLength": 1,
+          "title": "Partition Key",
+          "type": "string"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region"
+        },
+        "table_name": {
+          "maxLength": 255,
+          "minLength": 1,
+          "title": "Table Name",
+          "type": "string"
+        },
+        "ttl_attribute": {
+          "anyOf": [
+            {
+              "maxLength": 255,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ttl Attribute"
+        },
+        "value_attribute": {
+          "default": "value",
+          "maxLength": 255,
+          "minLength": 1,
+          "title": "Value Attribute",
+          "type": "string"
+        }
+      },
+      "required": [
+        "table_name",
+        "partition_key"
+      ],
+      "title": "DynamoDbConfig",
+      "type": "object"
+    },
+    "resource_memory_archive_config": {
+      "additionalProperties": false,
+      "properties": {
+        "retention_policies": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "minProperties": 1,
+          "title": "Retention Policies",
+          "type": "object"
+        }
+      },
+      "required": [
+        "retention_policies"
+      ],
+      "title": "MemoryArchiveConfig",
+      "type": "object"
+    },
+    "resource_memory_cache_config": {
+      "additionalProperties": false,
+      "properties": {},
+      "title": "MemoryCacheConfig",
+      "type": "object"
+    },
+    "resource_postgresql_config": {
+      "$defs": {
+        "PostgresEndpoint": {
+          "additionalProperties": false,
+          "properties": {
+            "database": {
+              "maxLength": 128,
+              "minLength": 1,
+              "title": "Database",
+              "type": "string"
+            },
+            "host": {
+              "maxLength": 253,
+              "minLength": 1,
+              "title": "Host",
+              "type": "string"
+            },
+            "port": {
+              "default": 5432,
+              "maximum": 65535,
+              "minimum": 1,
+              "title": "Port",
+              "type": "integer"
+            },
+            "sslmode": {
+              "$ref": "#/$defs/resource_postgresql_config/$defs/PostgresSslMode",
+              "default": "require"
+            }
+          },
+          "required": [
+            "host",
+            "database"
+          ],
+          "title": "PostgresEndpoint",
+          "type": "object"
+        },
+        "PostgresRuntimeDsnConnection": {
+          "additionalProperties": false,
+          "properties": {
+            "runtime_dsn": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "title": "Runtime Dsn",
+              "type": "string"
+            }
+          },
+          "required": [
+            "runtime_dsn"
+          ],
+          "title": "PostgresRuntimeDsnConnection",
+          "type": "object"
+        },
+        "PostgresSecretConnection": {
+          "additionalProperties": false,
+          "properties": {
+            "credentials": {
+              "$ref": "#/$defs/resource_postgresql_config/$defs/SecretResourceCredentials"
+            },
+            "endpoint": {
+              "$ref": "#/$defs/resource_postgresql_config/$defs/PostgresEndpoint"
+            }
+          },
+          "required": [
+            "endpoint",
+            "credentials"
+          ],
+          "title": "PostgresSecretConnection",
+          "type": "object"
+        },
+        "PostgresSslMode": {
+          "enum": [
+            "disable",
+            "require"
+          ],
+          "title": "PostgresSslMode",
+          "type": "string"
+        },
+        "SecretResourceCredentials": {
+          "additionalProperties": false,
+          "properties": {
+            "secret_alias": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "title": "Secret Alias",
+              "type": "string"
+            },
+            "secret_resource": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "title": "Secret Resource",
+              "type": "string"
+            }
+          },
+          "required": [
+            "secret_resource",
+            "secret_alias"
+          ],
+          "title": "SecretResourceCredentials",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "command_timeout_seconds": {
+          "default": 30.0,
+          "exclusiveMinimum": 0,
+          "maximum": 300.0,
+          "title": "Command Timeout Seconds",
+          "type": "number"
+        },
+        "connection": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/resource_postgresql_config/$defs/PostgresSecretConnection"
+            },
+            {
+              "$ref": "#/$defs/resource_postgresql_config/$defs/PostgresRuntimeDsnConnection"
+            }
+          ],
+          "title": "Connection"
+        },
+        "max_pool_size": {
+          "default": 10,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Max Pool Size",
+          "type": "integer"
+        },
+        "max_result_bytes": {
+          "default": 10485760,
+          "maximum": 104857600,
+          "minimum": 1,
+          "title": "Max Result Bytes",
+          "type": "integer"
+        },
+        "max_rows": {
+          "default": 10000,
+          "maximum": 100000,
+          "minimum": 1,
+          "title": "Max Rows",
+          "type": "integer"
+        },
+        "min_pool_size": {
+          "default": 1,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Min Pool Size",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "connection"
+      ],
+      "title": "PostgresConfig",
+      "type": "object"
+    },
+    "resource_redis_config": {
+      "$defs": {
+        "RedisEndpoint": {
+          "additionalProperties": false,
+          "properties": {
+            "database": {
+              "default": 0,
+              "maximum": 65535,
+              "minimum": 0,
+              "title": "Database",
+              "type": "integer"
+            },
+            "host": {
+              "maxLength": 253,
+              "minLength": 1,
+              "title": "Host",
+              "type": "string"
+            },
+            "port": {
+              "default": 6379,
+              "maximum": 65535,
+              "minimum": 1,
+              "title": "Port",
+              "type": "integer"
+            },
+            "tls": {
+              "default": true,
+              "title": "Tls",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "host"
+          ],
+          "title": "RedisEndpoint",
+          "type": "object"
+        },
+        "RedisRuntimeUrlConnection": {
+          "additionalProperties": false,
+          "properties": {
+            "require_tls": {
+              "default": true,
+              "title": "Require Tls",
+              "type": "boolean"
+            },
+            "runtime_url": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "title": "Runtime Url",
+              "type": "string"
+            }
+          },
+          "required": [
+            "runtime_url"
+          ],
+          "title": "RedisRuntimeUrlConnection",
+          "type": "object"
+        },
+        "RedisSecretConnection": {
+          "additionalProperties": false,
+          "properties": {
+            "credentials": {
+              "$ref": "#/$defs/resource_redis_config/$defs/SecretResourceCredentials"
+            },
+            "endpoint": {
+              "$ref": "#/$defs/resource_redis_config/$defs/RedisEndpoint"
+            }
+          },
+          "required": [
+            "endpoint",
+            "credentials"
+          ],
+          "title": "RedisSecretConnection",
+          "type": "object"
+        },
+        "SecretResourceCredentials": {
+          "additionalProperties": false,
+          "properties": {
+            "secret_alias": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "title": "Secret Alias",
+              "type": "string"
+            },
+            "secret_resource": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "title": "Secret Resource",
+              "type": "string"
+            }
+          },
+          "required": [
+            "secret_resource",
+            "secret_alias"
+          ],
+          "title": "SecretResourceCredentials",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "connect_timeout_seconds": {
+          "default": 5.0,
+          "exclusiveMinimum": 0,
+          "maximum": 300.0,
+          "title": "Connect Timeout Seconds",
+          "type": "number"
+        },
+        "connection": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/resource_redis_config/$defs/RedisSecretConnection"
+            },
+            {
+              "$ref": "#/$defs/resource_redis_config/$defs/RedisRuntimeUrlConnection"
+            }
+          ],
+          "title": "Connection"
+        },
+        "default_ttl_seconds": {
+          "anyOf": [
+            {
+              "maximum": 31536000,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Default Ttl Seconds"
+        },
+        "key_prefix": {
+          "default": "",
+          "maxLength": 4096,
+          "title": "Key Prefix",
+          "type": "string"
+        },
+        "max_connections": {
+          "default": 20,
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Max Connections",
+          "type": "integer"
+        },
+        "max_value_bytes": {
+          "default": 1048576,
+          "maximum": 104857600,
+          "minimum": 1,
+          "title": "Max Value Bytes",
+          "type": "integer"
+        },
+        "operation_timeout_seconds": {
+          "default": 10.0,
+          "exclusiveMinimum": 0,
+          "maximum": 300.0,
+          "title": "Operation Timeout Seconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "connection"
+      ],
+      "title": "RedisConfig",
+      "type": "object"
+    },
+    "resource_s3_config": {
+      "additionalProperties": false,
+      "properties": {
+        "bucket": {
+          "maxLength": 63,
+          "minLength": 3,
+          "title": "Bucket",
+          "type": "string"
+        },
+        "endpoint_url": {
+          "anyOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Endpoint Url"
+        },
+        "expected_bucket_owner": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9]{12}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Bucket Owner"
+        },
+        "kms_key_id": {
+          "anyOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Kms Key Id"
+        },
+        "prefix": {
+          "default": "",
+          "maxLength": 768,
+          "title": "Prefix",
+          "type": "string"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region"
+        },
+        "retention_policies": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "minProperties": 1,
+          "title": "Retention Policies",
+          "type": "object"
+        },
+        "server_side_encryption": {
+          "default": "AES256",
+          "pattern": "^(AES256|aws:kms)$",
+          "title": "Server Side Encryption",
+          "type": "string"
+        }
+      },
+      "required": [
+        "bucket",
+        "retention_policies"
+      ],
+      "title": "S3ArchiveConfig",
+      "type": "object"
+    },
+    "resource_s3_object_config": {
+      "$defs": {
+        "S3ObjectOperation": {
+          "enum": [
+            "read",
+            "write",
+            "delete"
+          ],
+          "title": "S3ObjectOperation",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "allowed_operations": {
+          "items": {
+            "$ref": "#/$defs/resource_s3_object_config/$defs/S3ObjectOperation"
+          },
+          "minItems": 1,
+          "title": "Allowed Operations",
+          "type": "array",
+          "uniqueItems": true
+        },
+        "bucket": {
+          "maxLength": 63,
+          "minLength": 3,
+          "title": "Bucket",
+          "type": "string"
+        },
+        "endpoint_url": {
+          "anyOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Endpoint Url"
+        },
+        "expected_bucket_owner": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9]{12}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Bucket Owner"
+        },
+        "kms_key_id": {
+          "anyOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Kms Key Id"
+        },
+        "max_object_bytes": {
+          "default": 10485760,
+          "maximum": 104857600,
+          "minimum": 1,
+          "title": "Max Object Bytes",
+          "type": "integer"
+        },
+        "prefix": {
+          "maxLength": 768,
+          "minLength": 1,
+          "title": "Prefix",
+          "type": "string"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region"
+        },
+        "server_side_encryption": {
+          "default": "AES256",
+          "pattern": "^(AES256|aws:kms)$",
+          "title": "Server Side Encryption",
+          "type": "string"
+        }
+      },
+      "required": [
+        "bucket",
+        "prefix",
+        "allowed_operations"
+      ],
+      "title": "S3ObjectConfig",
+      "type": "object"
+    },
+    "resource_static_config": {
+      "additionalProperties": false,
+      "properties": {
+        "values": {
+          "additionalProperties": true,
+          "title": "Values",
+          "type": "object"
+        }
+      },
+      "title": "StaticConfigConfig",
+      "type": "object"
+    },
+    "transport_direct_config": {
+      "additionalProperties": false,
+      "properties": {
+        "class": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Class",
+          "type": "string"
+        }
+      },
+      "required": [
+        "class"
+      ],
+      "title": "DirectTransportConfig",
+      "type": "object"
+    },
+    "transport_grpc_config": {
+      "$defs": {
+        "GrpcInsecureLocalSecurity": {
+          "additionalProperties": false,
+          "properties": {
+            "mode": {
+              "const": "insecure_local",
+              "default": "insecure_local",
+              "title": "Mode",
+              "type": "string"
+            }
+          },
+          "title": "GrpcInsecureLocalSecurity",
+          "type": "object"
+        },
+        "GrpcTlsSecurity": {
+          "additionalProperties": false,
+          "properties": {
+            "mode": {
+              "const": "tls",
+              "default": "tls",
+              "title": "Mode",
+              "type": "string"
+            },
+            "profile": {
+              "maxLength": 128,
+              "minLength": 1,
+              "title": "Profile",
+              "type": "string"
+            }
+          },
+          "required": [
+            "profile"
+          ],
+          "title": "GrpcTlsSecurity",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "address": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Address",
+          "type": "string"
+        },
+        "security": {
+          "discriminator": {
+            "mapping": {
+              "insecure_local": "#/$defs/GrpcInsecureLocalSecurity",
+              "tls": "#/$defs/GrpcTlsSecurity"
+            },
+            "propertyName": "mode"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/transport_grpc_config/$defs/GrpcTlsSecurity"
+            },
+            {
+              "$ref": "#/$defs/transport_grpc_config/$defs/GrpcInsecureLocalSecurity"
+            }
+          ],
+          "title": "Security"
+        }
+      },
+      "required": [
+        "address",
+        "security"
+      ],
+      "title": "GrpcTransportConfig",
+      "type": "object"
+    },
+    "transport_http_config": {
+      "$defs": {
+        "HttpRedirectPolicy": {
+          "enum": [
+            "deny",
+            "same_origin"
+          ],
+          "title": "HttpRedirectPolicy",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "base_url": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Base Url",
+          "type": "string"
+        },
+        "max_response_bytes": {
+          "default": 524288,
+          "minimum": 1,
+          "title": "Max Response Bytes",
+          "type": "integer"
+        },
+        "redirects": {
+          "$ref": "#/$defs/transport_http_config/$defs/HttpRedirectPolicy",
+          "default": "deny"
+        }
+      },
+      "required": [
+        "base_url"
+      ],
+      "title": "HttpTransportConfig",
+      "type": "object"
+    },
+    "transport_lambda_config": {
+      "additionalProperties": false,
+      "properties": {
+        "function_name": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Function Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "function_name"
+      ],
+      "title": "LambdaTransportConfig",
+      "type": "object"
+    },
+    "transport_queue_config": {
+      "additionalProperties": false,
+      "properties": {
+        "broker": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Broker",
+          "type": "string"
+        },
+        "destination": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Destination",
+          "type": "string"
+        },
+        "idempotency": {
+          "enum": [
+            "durable",
+            "none"
+          ],
+          "title": "Idempotency",
+          "type": "string"
+        }
+      },
+      "required": [
+        "broker",
+        "destination",
+        "idempotency"
+      ],
+      "title": "QueueTransportConfig",
+      "type": "object"
+    }
+  },
+  "$id": "https://justflow.dev/schemas/0.1.0/configuration.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "resources": {
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/resource_aws_secrets_manager_config"
+              },
+              "provider": {
+                "const": "aws_secrets_manager",
+                "type": "string"
+              }
+            },
+            "required": [
+              "config"
+            ],
+            "title": "ResourceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/resource_aws_ssm_config"
+              },
+              "provider": {
+                "const": "aws_ssm",
+                "type": "string"
+              }
+            },
+            "required": [
+              "config"
+            ],
+            "title": "ResourceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/resource_dynamodb_config"
+              },
+              "provider": {
+                "const": "dynamodb",
+                "type": "string"
+              }
+            },
+            "required": [
+              "config"
+            ],
+            "title": "ResourceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/resource_memory_archive_config"
+              },
+              "provider": {
+                "const": "memory_archive",
+                "type": "string"
+              }
+            },
+            "required": [
+              "config"
+            ],
+            "title": "ResourceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/resource_memory_cache_config"
+              },
+              "provider": {
+                "const": "memory_cache",
+                "type": "string"
+              }
+            },
+            "required": [],
+            "title": "ResourceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/resource_postgresql_config"
+              },
+              "provider": {
+                "const": "postgresql",
+                "type": "string"
+              }
+            },
+            "required": [
+              "config"
+            ],
+            "title": "ResourceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/resource_redis_config"
+              },
+              "provider": {
+                "const": "redis",
+                "type": "string"
+              }
+            },
+            "required": [
+              "config"
+            ],
+            "title": "ResourceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/resource_s3_config"
+              },
+              "provider": {
+                "const": "s3",
+                "type": "string"
+              }
+            },
+            "required": [
+              "config"
+            ],
+            "title": "ResourceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/resource_s3_object_config"
+              },
+              "provider": {
+                "const": "s3_object",
+                "type": "string"
+              }
+            },
+            "required": [
+              "config"
+            ],
+            "title": "ResourceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/resource_static_config"
+              },
+              "provider": {
+                "const": "static",
+                "type": "string"
+              }
+            },
+            "required": [],
+            "title": "ResourceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "class": {
+                "maxLength": 512,
+                "minLength": 3,
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)+$",
+                "type": "string"
+              },
+              "config": {
+                "additionalProperties": true,
+                "title": "Config",
+                "type": "object"
+              }
+            },
+            "required": [
+              "class"
+            ],
+            "title": "ResourceConfig",
+            "type": "object"
+          }
+        ]
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+        "title": "Workflow",
+        "type": "string"
+      },
+      "title": "Resources",
+      "type": "object"
+    },
+    "services": {
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "connect_timeout_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 300,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Connect Timeout Sec"
+              },
+              "dispatch_timeout_sec": {
+                "maximum": 31536000,
+                "minimum": 1,
+                "title": "Dispatch Timeout Sec",
+                "type": "integer"
+              },
+              "params": {
+                "additionalProperties": true,
+                "title": "Params",
+                "type": "object"
+              },
+              "response_timeout_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 31536000,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Response Timeout Sec"
+              },
+              "retries": {
+                "maximum": 100,
+                "minimum": 0,
+                "title": "Retries",
+                "type": "integer"
+              },
+              "transport": {
+                "const": "direct",
+                "type": "string"
+              },
+              "transport_config": {
+                "$ref": "#/$defs/transport_direct_config"
+              }
+            },
+            "required": [
+              "dispatch_timeout_sec",
+              "retries",
+              "transport",
+              "transport_config"
+            ],
+            "title": "ServiceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "connect_timeout_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 300,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Connect Timeout Sec"
+              },
+              "dispatch_timeout_sec": {
+                "maximum": 31536000,
+                "minimum": 1,
+                "title": "Dispatch Timeout Sec",
+                "type": "integer"
+              },
+              "params": {
+                "additionalProperties": true,
+                "title": "Params",
+                "type": "object"
+              },
+              "response_timeout_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 31536000,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Response Timeout Sec"
+              },
+              "retries": {
+                "maximum": 100,
+                "minimum": 0,
+                "title": "Retries",
+                "type": "integer"
+              },
+              "transport": {
+                "const": "grpc",
+                "type": "string"
+              },
+              "transport_config": {
+                "$ref": "#/$defs/transport_grpc_config"
+              }
+            },
+            "required": [
+              "dispatch_timeout_sec",
+              "retries",
+              "transport",
+              "transport_config"
+            ],
+            "title": "ServiceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "connect_timeout_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 300,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Connect Timeout Sec"
+              },
+              "dispatch_timeout_sec": {
+                "maximum": 31536000,
+                "minimum": 1,
+                "title": "Dispatch Timeout Sec",
+                "type": "integer"
+              },
+              "params": {
+                "additionalProperties": true,
+                "title": "Params",
+                "type": "object"
+              },
+              "response_timeout_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 31536000,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Response Timeout Sec"
+              },
+              "retries": {
+                "maximum": 100,
+                "minimum": 0,
+                "title": "Retries",
+                "type": "integer"
+              },
+              "transport": {
+                "const": "http",
+                "type": "string"
+              },
+              "transport_config": {
+                "$ref": "#/$defs/transport_http_config"
+              }
+            },
+            "required": [
+              "dispatch_timeout_sec",
+              "retries",
+              "transport",
+              "transport_config"
+            ],
+            "title": "ServiceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "connect_timeout_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 300,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Connect Timeout Sec"
+              },
+              "dispatch_timeout_sec": {
+                "maximum": 31536000,
+                "minimum": 1,
+                "title": "Dispatch Timeout Sec",
+                "type": "integer"
+              },
+              "params": {
+                "additionalProperties": true,
+                "title": "Params",
+                "type": "object"
+              },
+              "response_timeout_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 31536000,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Response Timeout Sec"
+              },
+              "retries": {
+                "maximum": 100,
+                "minimum": 0,
+                "title": "Retries",
+                "type": "integer"
+              },
+              "transport": {
+                "const": "lambda",
+                "type": "string"
+              },
+              "transport_config": {
+                "$ref": "#/$defs/transport_lambda_config"
+              }
+            },
+            "required": [
+              "dispatch_timeout_sec",
+              "retries",
+              "transport",
+              "transport_config"
+            ],
+            "title": "ServiceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "connect_timeout_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 300,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Connect Timeout Sec"
+              },
+              "dispatch_timeout_sec": {
+                "maximum": 31536000,
+                "minimum": 1,
+                "title": "Dispatch Timeout Sec",
+                "type": "integer"
+              },
+              "params": {
+                "additionalProperties": true,
+                "title": "Params",
+                "type": "object"
+              },
+              "response_timeout_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 31536000,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Response Timeout Sec"
+              },
+              "retries": {
+                "maximum": 100,
+                "minimum": 0,
+                "title": "Retries",
+                "type": "integer"
+              },
+              "transport": {
+                "const": "queue",
+                "type": "string"
+              },
+              "transport_config": {
+                "$ref": "#/$defs/transport_queue_config"
+              }
+            },
+            "required": [
+              "dispatch_timeout_sec",
+              "retries",
+              "transport",
+              "transport_config"
+            ],
+            "title": "ServiceConfig",
+            "type": "object"
+          }
+        ]
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+        "title": "Workflow",
+        "type": "string"
+      },
+      "title": "Services",
+      "type": "object"
+    },
+    "triggers": {
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[A-Za-z_][A-Za-z0-9_]*$": {
+          "discriminator": {
+            "mapping": {
+              "api": "#/$defs/ApiTriggerDeclaration",
+              "broker": "#/$defs/BrokerTriggerDeclaration",
+              "event": "#/$defs/EventTriggerDeclaration",
+              "host": "#/$defs/HostTriggerDeclaration",
+              "schedule": "#/$defs/ScheduleTriggerDeclaration",
+              "webhook": "#/$defs/WebhookTriggerDeclaration"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ApiTriggerDeclaration"
+            },
+            {
+              "$ref": "#/$defs/ScheduleTriggerDeclaration"
+            },
+            {
+              "$ref": "#/$defs/WebhookTriggerDeclaration"
+            },
+            {
+              "$ref": "#/$defs/EventTriggerDeclaration"
+            },
+            {
+              "$ref": "#/$defs/BrokerTriggerDeclaration"
+            },
+            {
+              "$ref": "#/$defs/HostTriggerDeclaration"
+            }
+          ]
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+        "title": "Workflow",
+        "type": "string"
+      },
+      "title": "Triggers",
+      "type": "object"
+    },
+    "workflows": {
+      "items": {
+        "$defs": {
+          "ApprovedFullAuditCapture": {
+            "additionalProperties": false,
+            "properties": {
+              "max_payload_bytes": {
+                "minimum": 1,
+                "title": "Max Payload Bytes",
+                "type": "integer"
+              },
+              "mode": {
+                "const": "approved-full",
+                "default": "approved-full",
+                "title": "Mode",
+                "type": "string"
+              }
+            },
+            "required": [
+              "max_payload_bytes"
+            ],
+            "title": "ApprovedFullAuditCapture",
+            "type": "object"
+          },
+          "CacheConfig": {
+            "additionalProperties": false,
+            "properties": {
+              "key": {
+                "maxLength": 4096,
+                "minLength": 1,
+                "title": "Key",
+                "type": "string"
+              },
+              "resource": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+                "title": "Resource",
+                "type": "string"
+              },
+              "ttl_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 31536000,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Ttl Sec"
+              }
+            },
+            "required": [
+              "resource",
+              "key"
+            ],
+            "title": "CacheConfig",
+            "type": "object"
+          },
+          "ChildWorkflowTarget": {
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "workflow",
+                "default": "workflow",
+                "title": "Kind",
+                "type": "string"
+              },
+              "workflow": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+                "title": "Workflow",
+                "type": "string"
+              }
+            },
+            "required": [
+              "workflow"
+            ],
+            "title": "ChildWorkflowTarget",
+            "type": "object"
+          },
+          "EvaluatorCondition": {
+            "additionalProperties": false,
+            "properties": {
+              "evaluator": {
+                "maxLength": 4096,
+                "minLength": 1,
+                "title": "Evaluator",
+                "type": "string"
+              },
+              "resources": {
+                "items": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+                  "type": "string"
+                },
+                "title": "Resources",
+                "type": "array"
+              }
+            },
+            "required": [
+              "evaluator"
+            ],
+            "title": "EvaluatorCondition",
+            "type": "object"
+          },
+          "FlowStep": {
+            "additionalProperties": false,
+            "properties": {
+              "as": {
+                "anyOf": [
+                  {
+                    "maxLength": 128,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "As"
+              },
+              "condition": {
+                "anyOf": [
+                  {
+                    "maxLength": 4096,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Condition"
+              },
+              "for_each": {
+                "anyOf": [
+                  {
+                    "maxLength": 4257,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,127}(?:\\.(?:[A-Za-z_][A-Za-z0-9_]{0,127}|0|[1-9][0-9]{0,127})){0,32}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "For Each"
+              },
+              "input": {
+                "anyOf": [
+                  {
+                    "maxLength": 4257,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,127}(?:\\.(?:[A-Za-z_][A-Za-z0-9_]{0,127}|0|[1-9][0-9]{0,127})){0,32}$",
+                    "type": "string"
+                  },
+                  {
+                    "additionalProperties": {
+                      "maxLength": 4257,
+                      "minLength": 1,
+                      "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,127}(?:\\.(?:[A-Za-z_][A-Za-z0-9_]{0,127}|0|[1-9][0-9]{0,127})){0,32}$",
+                      "type": "string"
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "items": {
+                      "maxLength": 4257,
+                      "minLength": 1,
+                      "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,127}(?:\\.(?:[A-Za-z_][A-Za-z0-9_]{0,127}|0|[1-9][0-9]{0,127})){0,32}$",
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Input"
+              },
+              "interval_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 31536000,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Interval Sec"
+              },
+              "max_concurrency": {
+                "anyOf": [
+                  {
+                    "maximum": 1000,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Max Concurrency"
+              },
+              "max_iterations": {
+                "anyOf": [
+                  {
+                    "maximum": 10000,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Max Iterations"
+              },
+              "name": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+                "title": "Name",
+                "type": "string"
+              },
+              "on_exhausted": {
+                "anyOf": [
+                  {
+                    "maxLength": 128,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "On Exhausted"
+              },
+              "on_failure": {
+                "anyOf": [
+                  {
+                    "maxLength": 128,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "On Failure"
+              },
+              "on_iteration_fail": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/IterationFailStrategy"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "on_result": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/$defs/OnResultBranch"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "On Result"
+              },
+              "op": {
+                "anyOf": [
+                  {
+                    "maxLength": 128,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Op"
+              },
+              "output": {
+                "anyOf": [
+                  {
+                    "maxLength": 128,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Output"
+              },
+              "parallel": {
+                "default": false,
+                "title": "Parallel",
+                "type": "boolean"
+              },
+              "params": {
+                "additionalProperties": true,
+                "title": "Params",
+                "type": "object"
+              },
+              "reason": {
+                "anyOf": [
+                  {
+                    "maxLength": 4096,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Reason"
+              },
+              "sleep_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 31536000,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Sleep Sec"
+              },
+              "terminal": {
+                "default": false,
+                "title": "Terminal",
+                "type": "boolean"
+              },
+              "then": {
+                "anyOf": [
+                  {
+                    "maxLength": 128,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Then"
+              },
+              "until": {
+                "anyOf": [
+                  {
+                    "maxLength": 4096,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Until"
+              },
+              "wait_for": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/WaitForConfig"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "title": "FlowStep",
+            "type": "object"
+          },
+          "IterationFailStrategy": {
+            "enum": [
+              "stop",
+              "skip",
+              "collect"
+            ],
+            "title": "IterationFailStrategy",
+            "type": "string"
+          },
+          "MetadataOnlyAuditCapture": {
+            "additionalProperties": false,
+            "properties": {
+              "mode": {
+                "const": "metadata-only",
+                "default": "metadata-only",
+                "title": "Mode",
+                "type": "string"
+              }
+            },
+            "title": "MetadataOnlyAuditCapture",
+            "type": "object"
+          },
+          "OnCompleteConfig": {
+            "additionalProperties": false,
+            "properties": {
+              "capture": {
+                "discriminator": {
+                  "mapping": {
+                    "approved-full": "#/$defs/ApprovedFullAuditCapture",
+                    "metadata-only": "#/$defs/MetadataOnlyAuditCapture",
+                    "redacted": "#/$defs/RedactedAuditCapture"
+                  },
+                  "propertyName": "mode"
+                },
+                "oneOf": [
+                  {
+                    "$ref": "#/$defs/MetadataOnlyAuditCapture"
+                  },
+                  {
+                    "$ref": "#/$defs/RedactedAuditCapture"
+                  },
+                  {
+                    "$ref": "#/$defs/ApprovedFullAuditCapture"
+                  }
+                ],
+                "title": "Capture"
+              },
+              "path": {
+                "maxLength": 4096,
+                "minLength": 1,
+                "title": "Path",
+                "type": "string"
+              },
+              "resource": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+                "title": "Resource",
+                "type": "string"
+              },
+              "retention_policy": {
+                "maxLength": 128,
+                "minLength": 1,
+                "title": "Retention Policy",
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource",
+              "path",
+              "retention_policy"
+            ],
+            "title": "OnCompleteConfig",
+            "type": "object"
+          },
+          "OnErrorConfig": {
+            "additionalProperties": false,
+            "properties": {
+              "then": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+                "title": "Then",
+                "type": "string"
+              }
+            },
+            "required": [
+              "then"
+            ],
+            "title": "OnErrorConfig",
+            "type": "object"
+          },
+          "OnResultBranch": {
+            "additionalProperties": false,
+            "properties": {
+              "default": {
+                "anyOf": [
+                  {
+                    "maxLength": 128,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Default"
+              },
+              "then": {
+                "anyOf": [
+                  {
+                    "maxLength": 128,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Then"
+              },
+              "when": {
+                "anyOf": [
+                  {
+                    "maxLength": 4096,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/$defs/EvaluatorCondition"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "When"
+              }
+            },
+            "title": "OnResultBranch",
+            "type": "object"
+          },
+          "RedactedAuditCapture": {
+            "additionalProperties": false,
+            "properties": {
+              "max_payload_bytes": {
+                "minimum": 1,
+                "title": "Max Payload Bytes",
+                "type": "integer"
+              },
+              "mode": {
+                "const": "redacted",
+                "default": "redacted",
+                "title": "Mode",
+                "type": "string"
+              },
+              "paths": {
+                "items": {
+                  "maxLength": 4096,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "maxItems": 1000,
+                "minItems": 1,
+                "title": "Paths",
+                "type": "array"
+              }
+            },
+            "required": [
+              "paths",
+              "max_payload_bytes"
+            ],
+            "title": "RedactedAuditCapture",
+            "type": "object"
+          },
+          "ServiceOperationTarget": {
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "maxLength": 512,
+                "minLength": 1,
+                "title": "Action",
+                "type": "string"
+              },
+              "kind": {
+                "const": "service",
+                "default": "service",
+                "title": "Kind",
+                "type": "string"
+              },
+              "service": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+                "title": "Service",
+                "type": "string"
+              }
+            },
+            "required": [
+              "service",
+              "action"
+            ],
+            "title": "ServiceOperationTarget",
+            "type": "object"
+          },
+          "StepDefinition": {
+            "additionalProperties": false,
+            "description": "A reusable operation with exactly one typed execution target.",
+            "properties": {
+              "cache": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/CacheConfig"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "input_schema": {
+                "anyOf": [
+                  {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Input Schema"
+              },
+              "output_schema": {
+                "anyOf": [
+                  {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Output Schema"
+              },
+              "params": {
+                "additionalProperties": true,
+                "title": "Params",
+                "type": "object"
+              },
+              "required_resources": {
+                "items": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+                  "type": "string"
+                },
+                "title": "Required Resources",
+                "type": "array"
+              },
+              "target": {
+                "discriminator": {
+                  "mapping": {
+                    "service": "#/$defs/ServiceOperationTarget",
+                    "workflow": "#/$defs/ChildWorkflowTarget"
+                  },
+                  "propertyName": "kind"
+                },
+                "oneOf": [
+                  {
+                    "$ref": "#/$defs/ServiceOperationTarget"
+                  },
+                  {
+                    "$ref": "#/$defs/ChildWorkflowTarget"
+                  }
+                ],
+                "title": "Target"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "title": "StepDefinition",
+            "type": "object"
+          },
+          "WaitForConfig": {
+            "additionalProperties": false,
+            "properties": {
+              "on_timeout": {
+                "anyOf": [
+                  {
+                    "maxLength": 128,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "On Timeout"
+              },
+              "signal": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+                "title": "Signal",
+                "type": "string"
+              },
+              "timeout_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 31536000,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Timeout Sec"
+              },
+              "timeout_until": {
+                "anyOf": [
+                  {
+                    "maxLength": 4257,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,127}(?:\\.(?:[A-Za-z_][A-Za-z0-9_]{0,127}|0|[1-9][0-9]{0,127})){0,32}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Reference resolved at runtime to epoch seconds or an ISO-8601 timestamp with 'Z' or an explicit UTC offset",
+                "title": "Timeout Until"
+              }
+            },
+            "required": [
+              "signal"
+            ],
+            "title": "WaitForConfig",
+            "type": "object"
+          }
+        },
+        "$id": "https://justflow.dev/schemas/0.1.0/workflow.schema.json",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "default": "",
+            "maxLength": 4096,
+            "title": "Description",
+            "type": "string"
+          },
+          "flow": {
+            "items": {
+              "$ref": "#/$defs/FlowStep"
+            },
+            "minItems": 1,
+            "title": "Flow",
+            "type": "array"
+          },
+          "input_schema": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Input Schema"
+          },
+          "on_complete": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/OnCompleteConfig"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "on_error": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/OnErrorConfig"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "output_schema": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Output Schema"
+          },
+          "params": {
+            "additionalProperties": false,
+            "patternProperties": {
+              "^[A-Za-z_][A-Za-z0-9_]*$": {
+                "type": "string"
+              }
+            },
+            "propertyNames": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "title": "Workflow",
+              "type": "string"
+            },
+            "title": "Params",
+            "type": "object"
+          },
+          "result": {
+            "anyOf": [
+              {
+                "maxLength": 4257,
+                "minLength": 1,
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,127}(?:\\.(?:[A-Za-z_][A-Za-z0-9_]{0,127}|0|[1-9][0-9]{0,127})){0,32}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Result"
+          },
+          "steps": {
+            "additionalProperties": false,
+            "patternProperties": {
+              "^[A-Za-z_][A-Za-z0-9_]*$": {
+                "$ref": "#/$defs/StepDefinition"
+              }
+            },
+            "propertyNames": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "title": "Workflow",
+              "type": "string"
+            },
+            "title": "Steps",
+            "type": "object"
+          },
+          "workflow": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+            "title": "Workflow",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workflow",
+          "steps",
+          "flow"
+        ],
+        "title": "Justflow workflow YAML",
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    }
+  },
+  "required": [
+    "resources",
+    "services",
+    "triggers",
+    "workflows"
+  ],
+  "title": "Justflow configuration envelope",
+  "type": "object"
+}

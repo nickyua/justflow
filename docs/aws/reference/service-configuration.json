@@ -1,0 +1,142 @@
+{
+  "version": "0.1.0",
+  "network": {
+    "gateway_subnets": "private",
+    "worker_subnets": "private",
+    "assign_public_ip": false,
+    "temporal_endpoint_exposure": "private-vpc-frontend"
+  },
+  "alb": {
+    "target_role": "gateway",
+    "listener_port": 443,
+    "target_port": 8080,
+    "health_check_path": "/readyz",
+    "health_check_interval_seconds": 15,
+    "healthy_threshold": 2,
+    "unhealthy_threshold": 3,
+    "deregistration_delay_seconds": 60,
+    "authentication_required": true,
+    "authentication_boundary": "host_application.production with HTTPS and expiring credentials"
+  },
+  "services": {
+    "gateway": {
+      "minimum_tasks": 2,
+      "maximum_tasks": 2,
+      "autoscaling": [],
+      "desired_tasks": 2,
+      "alarms": [
+        {
+          "AlarmName": "${APPLICATION_NAME}-gateway-cpuutilization",
+          "Namespace": "AWS/ECS",
+          "MetricName": "CPUUtilization",
+          "Dimensions": [
+            {
+              "Name": "ClusterName",
+              "Value": "${ECS_CLUSTER}"
+            },
+            {
+              "Name": "ServiceName",
+              "Value": "${APPLICATION_NAME}-gateway"
+            }
+          ],
+          "Statistic": "Average",
+          "Period": 60,
+          "EvaluationPeriods": 3,
+          "Threshold": 70,
+          "ComparisonOperator": "GreaterThanThreshold",
+          "TreatMissingData": "breaching",
+          "AlarmActions": [
+            "${OPERATIONS_ALARM_TOPIC_ARN}"
+          ]
+        },
+        {
+          "AlarmName": "${APPLICATION_NAME}-gateway-memoryutilization",
+          "Namespace": "AWS/ECS",
+          "MetricName": "MemoryUtilization",
+          "Dimensions": [
+            {
+              "Name": "ClusterName",
+              "Value": "${ECS_CLUSTER}"
+            },
+            {
+              "Name": "ServiceName",
+              "Value": "${APPLICATION_NAME}-gateway"
+            }
+          ],
+          "Statistic": "Average",
+          "Period": 60,
+          "EvaluationPeriods": 3,
+          "Threshold": 80,
+          "ComparisonOperator": "GreaterThanThreshold",
+          "TreatMissingData": "breaching",
+          "AlarmActions": [
+            "${OPERATIONS_ALARM_TOPIC_ARN}"
+          ]
+        }
+      ]
+    },
+    "worker": {
+      "minimum_tasks": 2,
+      "maximum_tasks": 2,
+      "autoscaling": [],
+      "desired_tasks": 2,
+      "alarms": [
+        {
+          "AlarmName": "${APPLICATION_NAME}-worker-cpuutilization",
+          "Namespace": "AWS/ECS",
+          "MetricName": "CPUUtilization",
+          "Dimensions": [
+            {
+              "Name": "ClusterName",
+              "Value": "${ECS_CLUSTER}"
+            },
+            {
+              "Name": "ServiceName",
+              "Value": "${APPLICATION_NAME}-worker"
+            }
+          ],
+          "Statistic": "Average",
+          "Period": 60,
+          "EvaluationPeriods": 3,
+          "Threshold": 70,
+          "ComparisonOperator": "GreaterThanThreshold",
+          "TreatMissingData": "breaching",
+          "AlarmActions": [
+            "${OPERATIONS_ALARM_TOPIC_ARN}"
+          ]
+        },
+        {
+          "AlarmName": "${APPLICATION_NAME}-worker-memoryutilization",
+          "Namespace": "AWS/ECS",
+          "MetricName": "MemoryUtilization",
+          "Dimensions": [
+            {
+              "Name": "ClusterName",
+              "Value": "${ECS_CLUSTER}"
+            },
+            {
+              "Name": "ServiceName",
+              "Value": "${APPLICATION_NAME}-worker"
+            }
+          ],
+          "Statistic": "Average",
+          "Period": 60,
+          "EvaluationPeriods": 3,
+          "Threshold": 80,
+          "ComparisonOperator": "GreaterThanThreshold",
+          "TreatMissingData": "breaching",
+          "AlarmActions": [
+            "${OPERATIONS_ALARM_TOPIC_ARN}"
+          ]
+        }
+      ]
+    }
+  },
+  "deployment": {
+    "minimum_healthy_percent": 100,
+    "maximum_percent": 200,
+    "circuit_breaker": true,
+    "rollback": true,
+    "health_grace_seconds": 60
+  }
+}

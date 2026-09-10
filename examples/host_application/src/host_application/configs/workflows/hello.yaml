@@ -1,0 +1,35 @@
+workflow: hello
+description: Render a greeting through a host-owned typed resource provider.
+
+input_schema: host_application.contracts.GreetingRequest
+output_schema: host_application.contracts.GreetingResult
+result: render.result
+
+params:
+  subject_ref: "${subject_ref}"
+
+on_complete:
+  resource: audit_store
+  path: audit/host-application/${request_id}.json
+  retention_policy: local-demo
+
+steps:
+  render_greeting:
+    target:
+      kind: service
+      service: greeting
+      action: render_greeting
+    required_resources:
+      - tenant_settings
+    output_schema: host_application.contracts.GreetingResult
+
+flow:
+  - name: render
+    op: render_greeting
+    input:
+      subject_ref: subject_ref
+    output: result
+    then: done
+
+  - name: done
+    terminal: true

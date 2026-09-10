@@ -1,0 +1,12 @@
+resources:
+  tenant_settings:
+    provider: host_tenant_settings
+    config:
+      values:
+        greeting_prefix: Welcome
+
+  audit_store:
+    provider: memory_archive
+    config:
+      retention_policies:
+        local-demo: 86400

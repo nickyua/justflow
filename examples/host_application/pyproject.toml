@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling==1.31.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "justflow-host-application-example"
+version = "0.1.0"
+description = "Host composition and production authentication example for Justflow"
+requires-python = ">=3.11"
+dependencies = ["justflow[admin]==0.1.0"]
+
+[project.scripts]
+host-application-config = "host_application.configuration:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/host_application"]

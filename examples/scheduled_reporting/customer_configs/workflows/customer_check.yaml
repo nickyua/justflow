@@ -1,0 +1,21 @@
+workflow: customer_check
+description: Check one opaque customer reference in the host's trusted scope.
+input_schema: scheduled_reporting.customers.CustomerWorkflowInput
+output_schema: scheduled_reporting.customers.CustomerCheck
+result: inspect.outcome
+params:
+  customer: "${customer}"
+steps:
+  check:
+    target:
+      kind: service
+      service: customers
+      action: check_customer
+flow:
+  - name: inspect
+    op: check
+    input: customer
+    output: outcome
+    then: done
+  - name: done
+    terminal: true

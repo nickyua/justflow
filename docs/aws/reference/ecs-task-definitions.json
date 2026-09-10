@@ -1,0 +1,381 @@
+{
+  "version": "0.1.0",
+  "task_definitions": {
+    "gateway": {
+      "family": "${APPLICATION_NAME}-gateway",
+      "networkMode": "awsvpc",
+      "requiresCompatibilities": [
+        "FARGATE"
+      ],
+      "cpu": "512",
+      "memory": "1024",
+      "executionRoleArn": "arn:aws:iam::${AWS_ACCOUNT_ID}:role/${APPLICATION_NAME}-gateway-execution",
+      "taskRoleArn": "arn:aws:iam::${AWS_ACCOUNT_ID}:role/${APPLICATION_NAME}-gateway",
+      "containerDefinitions": [
+        {
+          "name": "gateway",
+          "image": "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${APPLICATION_NAME}@sha256:${APPLICATION_IMAGE_DIGEST}",
+          "essential": true,
+          "readonlyRootFilesystem": true,
+          "user": "65532:65532",
+          "command": [
+            "host_application.production:create_gateway_application",
+            "--factory",
+            "--host",
+            "0.0.0.0",
+            "--port",
+            "8080"
+          ],
+          "portMappings": [
+            {
+              "containerPort": 8080,
+              "protocol": "tcp"
+            }
+          ],
+          "environment": [
+            {
+              "name": "JUSTFLOW_RUNTIME__PROFILE",
+              "value": "production"
+            },
+            {
+              "name": "JUSTFLOW_RUNTIME__SCOPE",
+              "value": "{\"tenant\":\"${TENANT_ID}\",\"application\":\"${APPLICATION_ID}\",\"environment\":\"${ENVIRONMENT_ID}\"}"
+            },
+            {
+              "name": "JUSTFLOW_TEMPORAL__ADDRESS",
+              "value": "${TEMPORAL_ENDPOINT}:7233"
+            },
+            {
+              "name": "JUSTFLOW_TEMPORAL__NAMESPACE",
+              "value": "${TEMPORAL_NAMESPACE}"
+            },
+            {
+              "name": "JUSTFLOW_TEMPORAL__CONNECTION",
+              "value": "{\"mode\":\"tls\",\"server_name\":\"${TEMPORAL_SERVER_NAME}\",\"root_ca_path\":\"${TEMPORAL_ROOT_CA_PATH}\"}"
+            },
+            {
+              "name": "JUSTFLOW_CATALOG__BACKEND",
+              "value": "s3"
+            },
+            {
+              "name": "JUSTFLOW_CATALOG__BUCKET",
+              "value": "${DEFINITION_BUCKET}"
+            },
+            {
+              "name": "JUSTFLOW_CATALOG__PREFIX",
+              "value": "${DEFINITION_PREFIX}"
+            },
+            {
+              "name": "JUSTFLOW_CATALOG__REGION",
+              "value": "${AWS_REGION}"
+            },
+            {
+              "name": "JUSTFLOW_CATALOG__EXPECTED_BUCKET_OWNER",
+              "value": "${AWS_ACCOUNT_ID}"
+            },
+            {
+              "name": "JUSTFLOW_CATALOG__SERVER_SIDE_ENCRYPTION",
+              "value": "aws:kms"
+            },
+            {
+              "name": "JUSTFLOW_CATALOG__KMS_KEY_ID",
+              "value": "${CATALOG_KMS_KEY_ARN}"
+            },
+            {
+              "name": "JUSTFLOW_CONFIGURATION__BACKEND",
+              "value": "aws"
+            },
+            {
+              "name": "JUSTFLOW_CONFIGURATION__BUCKET",
+              "value": "${CONFIGURATION_BUCKET}"
+            },
+            {
+              "name": "JUSTFLOW_CONFIGURATION__PREFIX",
+              "value": "${CONFIGURATION_PREFIX}"
+            },
+            {
+              "name": "JUSTFLOW_CONFIGURATION__TABLE_NAME",
+              "value": "${CONFIGURATION_TABLE}"
+            },
+            {
+              "name": "JUSTFLOW_CONFIGURATION__REVISION_INDEX_NAME",
+              "value": "${CONFIGURATION_REVISION_INDEX}"
+            },
+            {
+              "name": "JUSTFLOW_CONFIGURATION__ACTIVATION_INDEX_NAME",
+              "value": "${CONFIGURATION_ACTIVATION_INDEX}"
+            },
+            {
+              "name": "JUSTFLOW_CONFIGURATION__REGION",
+              "value": "${AWS_REGION}"
+            },
+            {
+              "name": "JUSTFLOW_CONFIGURATION__EXPECTED_BUCKET_OWNER",
+              "value": "${AWS_ACCOUNT_ID}"
+            },
+            {
+              "name": "JUSTFLOW_CONFIGURATION__SERVER_SIDE_ENCRYPTION",
+              "value": "aws:kms"
+            },
+            {
+              "name": "JUSTFLOW_CONFIGURATION__KMS_KEY_ID",
+              "value": "${CONFIGURATION_KMS_KEY_ARN}"
+            },
+            {
+              "name": "JUSTFLOW_DEPLOYMENT__NAME",
+              "value": "${APPLICATION_NAME}"
+            },
+            {
+              "name": "JUSTFLOW_DEPLOYMENT__BUILD_ID",
+              "value": "${WORKER_BUILD_ID}"
+            },
+            {
+              "name": "JUSTFLOW_DEPLOYMENT__ARTIFACT_DIGEST",
+              "value": "sha256:${APPLICATION_IMAGE_DIGEST}"
+            },
+            {
+              "name": "JUSTFLOW_DEPLOYMENT__PACKAGE_VERSION",
+              "value": "${JUSTFLOW_VERSION}"
+            },
+            {
+              "name": "JUSTFLOW_DEPLOYMENT__SOURCE_REVISION",
+              "value": "${SOURCE_REVISION}"
+            },
+            {
+              "name": "JUSTFLOW_SCHEDULES__TASK_QUEUE",
+              "value": "${SCHEDULE_TASK_QUEUE}"
+            },
+            {
+              "name": "JUSTFLOW_TEMPORAL__TASK_QUEUE",
+              "value": "${BUSINESS_TASK_QUEUE}"
+            },
+            {
+              "name": "JUSTFLOW_OPERATIONS__ADMIN_PANEL_ENABLED",
+              "value": "true"
+            },
+            {
+              "name": "JUSTFLOW_OPERATIONS__INDEXED_SEARCH_ATTRIBUTES_ENABLED",
+              "value": "true"
+            },
+            {
+              "name": "HOST_APPLICATION_PUBLIC_ORIGIN",
+              "value": "https://${APPLICATION_DOMAIN}"
+            },
+            {
+              "name": "FORWARDED_ALLOW_IPS",
+              "value": "${ALB_SUBNET_CIDRS}"
+            }
+          ],
+          "secrets": [
+            {
+              "name": "JUSTFLOW_TEMPORAL__CONNECTION__API_KEY",
+              "valueFrom": "${GATEWAY_TEMPORAL_TOKEN_SECRET_ARN}"
+            },
+            {
+              "name": "HOST_APPLICATION_CREDENTIALS",
+              "valueFrom": "${HOST_CREDENTIALS_SECRET_ARN}"
+            }
+          ],
+          "healthCheck": {
+            "command": [
+              "CMD-SHELL",
+              "python -c 'import urllib.request; urllib.request.urlopen(\"http://127.0.0.1:8080/readyz\", timeout=2).close()'"
+            ],
+            "interval": 10,
+            "timeout": 3,
+            "retries": 3,
+            "startPeriod": 30
+          },
+          "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+              "awslogs-group": "/ecs/${APPLICATION_NAME}/gateway",
+              "awslogs-region": "${AWS_REGION}",
+              "awslogs-stream-prefix": "gateway"
+            }
+          },
+          "stopTimeout": 60
+        }
+      ]
+    },
+    "worker": {
+      "family": "${APPLICATION_NAME}-worker",
+      "networkMode": "awsvpc",
+      "requiresCompatibilities": [
+        "FARGATE"
+      ],
+      "cpu": "1024",
+      "memory": "2048",
+      "executionRoleArn": "arn:aws:iam::${AWS_ACCOUNT_ID}:role/${APPLICATION_NAME}-worker-execution",
+      "taskRoleArn": "arn:aws:iam::${AWS_ACCOUNT_ID}:role/${APPLICATION_NAME}-worker",
+      "containerDefinitions": [
+        {
+          "name": "worker",
+          "image": "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${APPLICATION_NAME}@sha256:${APPLICATION_IMAGE_DIGEST}",
+          "essential": true,
+          "readonlyRootFilesystem": true,
+          "user": "65532:65532",
+          "command": [
+            "host_application.production:create_worker_application",
+            "--factory",
+            "--host",
+            "0.0.0.0",
+            "--port",
+            "8080"
+          ],
+          "environment": [
+            {
+              "name": "JUSTFLOW_RUNTIME__PROFILE",
+              "value": "production"
+            },
+            {
+              "name": "JUSTFLOW_RUNTIME__SCOPE",
+              "value": "{\"tenant\":\"${TENANT_ID}\",\"application\":\"${APPLICATION_ID}\",\"environment\":\"${ENVIRONMENT_ID}\"}"
+            },
+            {
+              "name": "JUSTFLOW_TEMPORAL__ADDRESS",
+              "value": "${TEMPORAL_ENDPOINT}:7233"
+            },
+            {
+              "name": "JUSTFLOW_TEMPORAL__NAMESPACE",
+              "value": "${TEMPORAL_NAMESPACE}"
+            },
+            {
+              "name": "JUSTFLOW_TEMPORAL__CONNECTION",
+              "value": "{\"mode\":\"tls\",\"server_name\":\"${TEMPORAL_SERVER_NAME}\",\"root_ca_path\":\"${TEMPORAL_ROOT_CA_PATH}\"}"
+            },
+            {
+              "name": "JUSTFLOW_CATALOG__BACKEND",
+              "value": "s3"
+            },
+            {
+              "name": "JUSTFLOW_CATALOG__BUCKET",
+              "value": "${DEFINITION_BUCKET}"
+            },
+            {
+              "name": "JUSTFLOW_CATALOG__PREFIX",
+              "value": "${DEFINITION_PREFIX}"
+            },
+            {
+              "name": "JUSTFLOW_CATALOG__REGION",
+              "value": "${AWS_REGION}"
+            },
+            {
+              "name": "JUSTFLOW_CATALOG__EXPECTED_BUCKET_OWNER",
+              "value": "${AWS_ACCOUNT_ID}"
+            },
+            {
+              "name": "JUSTFLOW_CATALOG__SERVER_SIDE_ENCRYPTION",
+              "value": "aws:kms"
+            },
+            {
+              "name": "JUSTFLOW_CATALOG__KMS_KEY_ID",
+              "value": "${CATALOG_KMS_KEY_ARN}"
+            },
+            {
+              "name": "JUSTFLOW_CONFIGURATION__BACKEND",
+              "value": "aws"
+            },
+            {
+              "name": "JUSTFLOW_CONFIGURATION__BUCKET",
+              "value": "${CONFIGURATION_BUCKET}"
+            },
+            {
+              "name": "JUSTFLOW_CONFIGURATION__PREFIX",
+              "value": "${CONFIGURATION_PREFIX}"
+            },
+            {
+              "name": "JUSTFLOW_CONFIGURATION__TABLE_NAME",
+              "value": "${CONFIGURATION_TABLE}"
+            },
+            {
+              "name": "JUSTFLOW_CONFIGURATION__REVISION_INDEX_NAME",
+              "value": "${CONFIGURATION_REVISION_INDEX}"
+            },
+            {
+              "name": "JUSTFLOW_CONFIGURATION__ACTIVATION_INDEX_NAME",
+              "value": "${CONFIGURATION_ACTIVATION_INDEX}"
+            },
+            {
+              "name": "JUSTFLOW_CONFIGURATION__REGION",
+              "value": "${AWS_REGION}"
+            },
+            {
+              "name": "JUSTFLOW_CONFIGURATION__EXPECTED_BUCKET_OWNER",
+              "value": "${AWS_ACCOUNT_ID}"
+            },
+            {
+              "name": "JUSTFLOW_CONFIGURATION__SERVER_SIDE_ENCRYPTION",
+              "value": "aws:kms"
+            },
+            {
+              "name": "JUSTFLOW_CONFIGURATION__KMS_KEY_ID",
+              "value": "${CONFIGURATION_KMS_KEY_ARN}"
+            },
+            {
+              "name": "JUSTFLOW_DEPLOYMENT__NAME",
+              "value": "${APPLICATION_NAME}"
+            },
+            {
+              "name": "JUSTFLOW_DEPLOYMENT__BUILD_ID",
+              "value": "${WORKER_BUILD_ID}"
+            },
+            {
+              "name": "JUSTFLOW_DEPLOYMENT__ARTIFACT_DIGEST",
+              "value": "sha256:${APPLICATION_IMAGE_DIGEST}"
+            },
+            {
+              "name": "JUSTFLOW_DEPLOYMENT__PACKAGE_VERSION",
+              "value": "${JUSTFLOW_VERSION}"
+            },
+            {
+              "name": "JUSTFLOW_DEPLOYMENT__SOURCE_REVISION",
+              "value": "${SOURCE_REVISION}"
+            },
+            {
+              "name": "JUSTFLOW_SCHEDULES__TASK_QUEUE",
+              "value": "${SCHEDULE_TASK_QUEUE}"
+            },
+            {
+              "name": "JUSTFLOW_TEMPORAL__TASK_QUEUE",
+              "value": "${BUSINESS_TASK_QUEUE}"
+            }
+          ],
+          "secrets": [
+            {
+              "name": "JUSTFLOW_TEMPORAL__CONNECTION__API_KEY",
+              "valueFrom": "${WORKER_TEMPORAL_TOKEN_SECRET_ARN}"
+            },
+            {
+              "name": "JUSTFLOW_RESOURCE_CONNECTIONS__POSTGRES_DSNS__application",
+              "valueFrom": "${APPLICATION_POSTGRES_DSN_SECRET_ARN}"
+            },
+            {
+              "name": "JUSTFLOW_RESOURCE_CONNECTIONS__REDIS_URLS__application",
+              "valueFrom": "${APPLICATION_REDIS_URL_SECRET_ARN}"
+            }
+          ],
+          "healthCheck": {
+            "command": [
+              "CMD-SHELL",
+              "python -c 'import urllib.request; urllib.request.urlopen(\"http://127.0.0.1:8080/readyz\", timeout=2).close()'"
+            ],
+            "interval": 10,
+            "timeout": 3,
+            "retries": 3,
+            "startPeriod": 30
+          },
+          "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+              "awslogs-group": "/ecs/${APPLICATION_NAME}/worker",
+              "awslogs-region": "${AWS_REGION}",
+              "awslogs-stream-prefix": "worker"
+            }
+          },
+          "stopTimeout": 60
+        }
+      ]
+    }
+  }
+}

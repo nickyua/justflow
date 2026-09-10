@@ -1,0 +1,325 @@
+{
+  "$defs": {
+    "ComponentReference": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z][A-Za-z0-9._-]*$",
+          "title": "Name",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "title": "ComponentReference",
+      "type": "object"
+    },
+    "ComponentReplayContract": {
+      "additionalProperties": false,
+      "description": "Determinism and retirement metadata retained with the exact component.",
+      "properties": {
+        "compatible_versions": {
+          "items": {
+            "$ref": "#/$defs/ComponentReference"
+          },
+          "maxItems": 10000,
+          "title": "Compatible Versions",
+          "type": "array"
+        },
+        "deterministic": {
+          "title": "Deterministic",
+          "type": "boolean"
+        },
+        "retirement_identity": {
+          "maxLength": 71,
+          "minLength": 71,
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Retirement Identity",
+          "type": "string"
+        }
+      },
+      "required": [
+        "deterministic",
+        "retirement_identity"
+      ],
+      "title": "ComponentReplayContract",
+      "type": "object"
+    },
+    "ComponentRuntimeIdentity": {
+      "additionalProperties": false,
+      "description": "Host-owned runtime implementation selected by a component revision.",
+      "properties": {
+        "artifact_digest": {
+          "maxLength": 71,
+          "minLength": 71,
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Artifact Digest",
+          "type": "string"
+        },
+        "implementation": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z][A-Za-z0-9._-]*$",
+          "title": "Implementation",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "implementation",
+        "version",
+        "artifact_digest"
+      ],
+      "title": "ComponentRuntimeIdentity",
+      "type": "object"
+    },
+    "PlatformStepComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Action",
+          "type": "string"
+        },
+        "allow_cache": {
+          "default": false,
+          "title": "Allow Cache",
+          "type": "boolean"
+        },
+        "approved_alias_parameters": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Approved Alias Parameters",
+          "type": "array",
+          "uniqueItems": true
+        },
+        "description": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "input_schema": {
+          "additionalProperties": true,
+          "title": "Input Schema",
+          "type": "object"
+        },
+        "output_schema": {
+          "additionalProperties": true,
+          "title": "Output Schema",
+          "type": "object"
+        },
+        "parameter_schema": {
+          "additionalProperties": true,
+          "title": "Parameter Schema",
+          "type": "object"
+        },
+        "reference": {
+          "$ref": "#/$defs/ComponentReference"
+        },
+        "replay": {
+          "$ref": "#/$defs/ComponentReplayContract"
+        },
+        "resource_slots": {
+          "maxProperties": 100,
+          "patternProperties": {
+            "^[A-Za-z_][A-Za-z0-9_]*$": {
+              "$ref": "#/$defs/ResourceCapability"
+            }
+          },
+          "propertyNames": {
+            "maxLength": 128,
+            "minLength": 1
+          },
+          "title": "Resource Slots",
+          "type": "object"
+        },
+        "runtime_implementation": {
+          "$ref": "#/$defs/ComponentRuntimeIdentity"
+        },
+        "transport": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Transport",
+          "type": "string"
+        }
+      },
+      "required": [
+        "reference",
+        "runtime_implementation",
+        "replay",
+        "transport",
+        "action",
+        "parameter_schema",
+        "input_schema",
+        "output_schema"
+      ],
+      "title": "PlatformStepComponent",
+      "type": "object"
+    },
+    "PlatformTriggerComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "approved_alias_parameters": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Approved Alias Parameters",
+          "type": "array",
+          "uniqueItems": true
+        },
+        "description": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "kind": {
+          "$ref": "#/$defs/TriggerKind"
+        },
+        "output_schema": {
+          "additionalProperties": true,
+          "title": "Output Schema",
+          "type": "object"
+        },
+        "parameter_schema": {
+          "additionalProperties": true,
+          "title": "Parameter Schema",
+          "type": "object"
+        },
+        "reference": {
+          "$ref": "#/$defs/ComponentReference"
+        },
+        "replay": {
+          "$ref": "#/$defs/ComponentReplayContract"
+        },
+        "resource_slots": {
+          "maxProperties": 100,
+          "patternProperties": {
+            "^[A-Za-z_][A-Za-z0-9_]*$": {
+              "$ref": "#/$defs/ResourceCapability"
+            }
+          },
+          "propertyNames": {
+            "maxLength": 128,
+            "minLength": 1
+          },
+          "title": "Resource Slots",
+          "type": "object"
+        },
+        "runtime_implementation": {
+          "$ref": "#/$defs/ComponentRuntimeIdentity"
+        }
+      },
+      "required": [
+        "reference",
+        "runtime_implementation",
+        "replay",
+        "kind",
+        "parameter_schema",
+        "output_schema"
+      ],
+      "title": "PlatformTriggerComponent",
+      "type": "object"
+    },
+    "ResourceCapability": {
+      "enum": [
+        "archive",
+        "cache",
+        "config",
+        "database",
+        "key-value",
+        "object",
+        "secret-reader"
+      ],
+      "title": "ResourceCapability",
+      "type": "string"
+    },
+    "TriggerKind": {
+      "enum": [
+        "api",
+        "schedule",
+        "webhook",
+        "event",
+        "broker",
+        "host"
+      ],
+      "title": "TriggerKind",
+      "type": "string"
+    }
+  },
+  "$id": "https://justflow.dev/schemas/0.1.0/platform-component-catalog.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "revision_id": {
+      "maxLength": 64,
+      "minLength": 64,
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Revision Id",
+      "type": "string"
+    },
+    "steps": {
+      "additionalProperties": {
+        "$ref": "#/$defs/PlatformStepComponent"
+      },
+      "maxProperties": 10000,
+      "title": "Steps",
+      "type": "object"
+    },
+    "triggers": {
+      "additionalProperties": {
+        "$ref": "#/$defs/PlatformTriggerComponent"
+      },
+      "maxProperties": 10000,
+      "title": "Triggers",
+      "type": "object"
+    }
+  },
+  "required": [
+    "revision_id"
+  ],
+  "title": "Justflow platform component catalog",
+  "type": "object"
+}

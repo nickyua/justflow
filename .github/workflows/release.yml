@@ -1,0 +1,179 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  EXPECTED_DISTRIBUTION: justflow
+  EXPECTED_VERSION: 0.1.0
+  TRIVY_IMAGE: aquasec/trivy:0.72.0@sha256:cffe3f5161a47a6823fbd23d985795b3ed72a4c806da4c4df16266c02accdd6f
+
+jobs:
+  quality:
+    uses: ./.github/workflows/ci.yml
+
+  publish:
+    if: ${{ vars.PYPI_PUBLISH_ENABLED == 'true' }}
+    needs: quality
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/justflow/
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.14"
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: python-distributions
+          path: .
+      - run: sha256sum --check dist.sha256
+      - run: python scripts/verify_release_tag.py "$GITHUB_REF_NAME" "$EXPECTED_DISTRIBUTION"
+      - run: python scripts/verify_distribution.py dist "$EXPECTED_VERSION"
+      - run: python -m scripts.verify_pypi_publication dist
+      - uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # release/v1
+        with:
+          packages-dir: dist/
+          skip-existing: true
+
+  publish-images:
+    if: ${{ vars.CONTAINER_PUBLISH_ENABLED == 'true' }}
+    needs: quality
+    runs-on: ubuntu-latest
+    environment:
+      name: container-release
+      url: https://github.com/${{ github.repository }}/pkgs/container/justflow
+    permissions:
+      artifact-metadata: write
+      attestations: write
+      contents: read
+      id-token: write
+      packages: write
+    env:
+      BASE_IMAGE: ghcr.io/${{ github.repository_owner }}/justflow
+      REFERENCE_IMAGE: ghcr.io/${{ github.repository_owner }}/justflow-host-application
+      CANDIDATE_TAG: candidate-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.14"
+      - run: python -m pip install --editable .
+      - name: Resolve release provenance
+        run: echo "BUILD_DATE=$(git show -s --format=%cI "$GITHUB_SHA")" >> "$GITHUB_ENV"
+      - name: Validate release tag and vulnerability policy
+        run: |
+          python scripts/verify_release_tag.py "$GITHUB_REF_NAME" \
+            "$EXPECTED_DISTRIBUTION"
+          python scripts/validate_vulnerability_exceptions.py \
+            --trivy-output /tmp/justflow-trivyignore.yaml
+      - name: Authenticate to the release registry
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push the base image once
+        run: >-
+          docker buildx build --file docker/Dockerfile --push
+          --provenance=mode=max --sbom=true
+          --tag "$BASE_IMAGE:$CANDIDATE_TAG"
+          --metadata-file /tmp/justflow-base-metadata.json
+          --build-arg SOURCE_REVISION="$GITHUB_SHA"
+          --build-arg BUILD_DATE="$BUILD_DATE"
+          --build-arg SOURCE_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" .
+      - name: Resolve the immutable base digest
+        id: base-image
+        run: |
+          BASE_DIGEST=$(jq -r '."containerimage.digest"' /tmp/justflow-base-metadata.json)
+          echo "BASE_DIGEST=$BASE_DIGEST" >> "$GITHUB_ENV"
+          echo "digest=$BASE_DIGEST" >> "$GITHUB_OUTPUT"
+      - name: Build and push the reference image once
+        run: >-
+          docker buildx build --file examples/host_application/Dockerfile --push
+          --provenance=mode=max --sbom=true
+          --tag "$REFERENCE_IMAGE:$CANDIDATE_TAG"
+          --metadata-file /tmp/justflow-reference-metadata.json
+          --build-arg JUSTFLOW_BASE_IMAGE="$BASE_IMAGE@$BASE_DIGEST"
+          --build-arg SOURCE_REVISION="$GITHUB_SHA"
+          --build-arg BUILD_DATE="$BUILD_DATE"
+          --build-arg SOURCE_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" .
+      - name: Resolve the immutable reference digest
+        id: reference-image
+        run: |
+          REFERENCE_DIGEST=$(jq -r '."containerimage.digest"' /tmp/justflow-reference-metadata.json)
+          echo "REFERENCE_DIGEST=$REFERENCE_DIGEST" >> "$GITHUB_ENV"
+          echo "digest=$REFERENCE_DIGEST" >> "$GITHUB_OUTPUT"
+      - name: Pull the exact candidate digests for verification
+        run: |
+          docker pull "$BASE_IMAGE@$BASE_DIGEST"
+          docker pull "$REFERENCE_IMAGE@$REFERENCE_DIGEST"
+          mkdir -p container-artifacts
+      - name: Verify candidate filesystem and runtime contracts
+        run: >-
+          python scripts/verify_container_images.py
+          "$BASE_IMAGE@$BASE_DIGEST" "$REFERENCE_IMAGE@$REFERENCE_DIGEST"
+      - name: Scan the exact candidate images
+        run: |
+          docker run --rm --volume /var/run/docker.sock:/var/run/docker.sock:ro \
+            --volume /tmp/justflow-trivyignore.yaml:/ignore.yaml:ro \
+            "$TRIVY_IMAGE" image --no-progress --exit-code 1 \
+            --severity HIGH,CRITICAL --scanners vuln,secret,misconfig --ignore-unfixed \
+            --ignorefile /ignore.yaml "$BASE_IMAGE@$BASE_DIGEST"
+          docker run --rm --volume /var/run/docker.sock:/var/run/docker.sock:ro \
+            --volume /tmp/justflow-trivyignore.yaml:/ignore.yaml:ro \
+            "$TRIVY_IMAGE" image --no-progress --exit-code 1 \
+            --severity HIGH,CRITICAL --scanners vuln,secret,misconfig --ignore-unfixed \
+            --ignorefile /ignore.yaml "$REFERENCE_IMAGE@$REFERENCE_DIGEST"
+      - name: Generate published-image SBOMs
+        run: |
+          docker run --rm --volume /var/run/docker.sock:/var/run/docker.sock:ro \
+            --volume "$PWD/container-artifacts:/artifacts" \
+            "$TRIVY_IMAGE" image --no-progress --format spdx-json \
+            --output /artifacts/justflow.spdx.json "$BASE_IMAGE@$BASE_DIGEST"
+          docker run --rm --volume /var/run/docker.sock:/var/run/docker.sock:ro \
+            --volume "$PWD/container-artifacts:/artifacts" \
+            "$TRIVY_IMAGE" image --no-progress --format spdx-json \
+            --output /artifacts/host-application.spdx.json \
+            "$REFERENCE_IMAGE@$REFERENCE_DIGEST"
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+        with:
+          cosign-release: v3.0.6
+      - name: Sign both published image digests with the workflow identity
+        run: |
+          cosign sign --yes "$BASE_IMAGE@$BASE_DIGEST"
+          cosign sign --yes "$REFERENCE_IMAGE@$REFERENCE_DIGEST"
+      - name: Attest base-image provenance
+        uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
+        with:
+          subject-name: ${{ env.BASE_IMAGE }}
+          subject-digest: ${{ steps.base-image.outputs.digest }}
+          push-to-registry: true
+      - name: Attest reference-image provenance
+        uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
+        with:
+          subject-name: ${{ env.REFERENCE_IMAGE }}
+          subject-digest: ${{ steps.reference-image.outputs.digest }}
+          push-to-registry: true
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: released-container-sboms
+          path: container-artifacts/*.spdx.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Promote verified digests to release versions
+        run: |
+          python scripts/promote_container_image.py "$BASE_IMAGE@$BASE_DIGEST" "$BASE_IMAGE:$EXPECTED_VERSION"
+          python scripts/promote_container_image.py "$REFERENCE_IMAGE@$REFERENCE_DIGEST" "$REFERENCE_IMAGE:$EXPECTED_VERSION"

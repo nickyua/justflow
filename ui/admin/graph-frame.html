@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <title>Workflow graph</title>
+    <link rel="stylesheet" href="/admin/assets/graph-tooltips.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #ffffff;
+        font-family: Inter, ui-sans-serif, -apple-system, sans-serif;
+      }
+      #graph {
+        overflow: auto;
+        padding: 8px;
+      }
+      #graph svg {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        margin: 0 auto;
+      }
+      .frame-message {
+        color: #687082;
+        font-size: 13px;
+        text-align: center;
+        padding: 24px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="graph"><p class="frame-message">Waiting for a graph…</p></div>
+    <div class="tooltip" id="tooltip"></div>
+    <script src="/admin/assets/mermaid.js"></script>
+    <script src="/admin/assets/graph-tooltips.js"></script>
+    <script type="module" src="/src/graph-frame/main.ts"></script>
+  </body>
+</html>

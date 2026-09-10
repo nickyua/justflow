@@ -1,0 +1,1067 @@
+{
+  "$defs": {
+    "resource_aws_secrets_manager_config": {
+      "$defs": {
+        "SecretsManagerSelection": {
+          "additionalProperties": false,
+          "properties": {
+            "secret_id": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "title": "Secret Id",
+              "type": "string"
+            },
+            "version_id": {
+              "anyOf": [
+                {
+                  "maxLength": 2048,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Version Id"
+            },
+            "version_stage": {
+              "anyOf": [
+                {
+                  "maxLength": 2048,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Version Stage"
+            }
+          },
+          "required": [
+            "secret_id"
+          ],
+          "title": "SecretsManagerSelection",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "endpoint_url": {
+          "anyOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Endpoint Url"
+        },
+        "max_value_bytes": {
+          "default": 65536,
+          "maximum": 1048576,
+          "minimum": 1,
+          "title": "Max Value Bytes",
+          "type": "integer"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region"
+        },
+        "secrets": {
+          "maxProperties": 256,
+          "minProperties": 1,
+          "patternProperties": {
+            "^[A-Za-z_][A-Za-z0-9_]*$": {
+              "$ref": "#/$defs/resource_aws_secrets_manager_config/$defs/SecretsManagerSelection"
+            }
+          },
+          "propertyNames": {
+            "maxLength": 128,
+            "minLength": 1
+          },
+          "title": "Secrets",
+          "type": "object"
+        }
+      },
+      "required": [
+        "secrets"
+      ],
+      "title": "SecretsManagerConfig",
+      "type": "object"
+    },
+    "resource_aws_ssm_config": {
+      "$defs": {
+        "ParameterSelection": {
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "title": "Name",
+              "type": "string"
+            },
+            "version": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Version"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "title": "ParameterSelection",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "endpoint_url": {
+          "anyOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Endpoint Url"
+        },
+        "max_value_bytes": {
+          "default": 65536,
+          "maximum": 1048576,
+          "minimum": 1,
+          "title": "Max Value Bytes",
+          "type": "integer"
+        },
+        "parameters": {
+          "maxProperties": 256,
+          "minProperties": 1,
+          "patternProperties": {
+            "^[A-Za-z_][A-Za-z0-9_]*$": {
+              "$ref": "#/$defs/resource_aws_ssm_config/$defs/ParameterSelection"
+            }
+          },
+          "propertyNames": {
+            "maxLength": 128,
+            "minLength": 1
+          },
+          "title": "Parameters",
+          "type": "object"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region"
+        }
+      },
+      "required": [
+        "parameters"
+      ],
+      "title": "ParameterStoreConfig",
+      "type": "object"
+    },
+    "resource_dynamodb_config": {
+      "additionalProperties": false,
+      "properties": {
+        "endpoint_url": {
+          "anyOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Endpoint Url"
+        },
+        "key_prefix": {
+          "default": "",
+          "maxLength": 2048,
+          "title": "Key Prefix",
+          "type": "string"
+        },
+        "max_value_bytes": {
+          "default": 409600,
+          "maximum": 409600,
+          "minimum": 1,
+          "title": "Max Value Bytes",
+          "type": "integer"
+        },
+        "partition_key": {
+          "maxLength": 255,
+          "minLength": 1,
+          "title": "Partition Key",
+          "type": "string"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region"
+        },
+        "table_name": {
+          "maxLength": 255,
+          "minLength": 1,
+          "title": "Table Name",
+          "type": "string"
+        },
+        "ttl_attribute": {
+          "anyOf": [
+            {
+              "maxLength": 255,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ttl Attribute"
+        },
+        "value_attribute": {
+          "default": "value",
+          "maxLength": 255,
+          "minLength": 1,
+          "title": "Value Attribute",
+          "type": "string"
+        }
+      },
+      "required": [
+        "table_name",
+        "partition_key"
+      ],
+      "title": "DynamoDbConfig",
+      "type": "object"
+    },
+    "resource_memory_archive_config": {
+      "additionalProperties": false,
+      "properties": {
+        "retention_policies": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "minProperties": 1,
+          "title": "Retention Policies",
+          "type": "object"
+        }
+      },
+      "required": [
+        "retention_policies"
+      ],
+      "title": "MemoryArchiveConfig",
+      "type": "object"
+    },
+    "resource_memory_cache_config": {
+      "additionalProperties": false,
+      "properties": {},
+      "title": "MemoryCacheConfig",
+      "type": "object"
+    },
+    "resource_postgresql_config": {
+      "$defs": {
+        "PostgresEndpoint": {
+          "additionalProperties": false,
+          "properties": {
+            "database": {
+              "maxLength": 128,
+              "minLength": 1,
+              "title": "Database",
+              "type": "string"
+            },
+            "host": {
+              "maxLength": 253,
+              "minLength": 1,
+              "title": "Host",
+              "type": "string"
+            },
+            "port": {
+              "default": 5432,
+              "maximum": 65535,
+              "minimum": 1,
+              "title": "Port",
+              "type": "integer"
+            },
+            "sslmode": {
+              "$ref": "#/$defs/resource_postgresql_config/$defs/PostgresSslMode",
+              "default": "require"
+            }
+          },
+          "required": [
+            "host",
+            "database"
+          ],
+          "title": "PostgresEndpoint",
+          "type": "object"
+        },
+        "PostgresRuntimeDsnConnection": {
+          "additionalProperties": false,
+          "properties": {
+            "runtime_dsn": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "title": "Runtime Dsn",
+              "type": "string"
+            }
+          },
+          "required": [
+            "runtime_dsn"
+          ],
+          "title": "PostgresRuntimeDsnConnection",
+          "type": "object"
+        },
+        "PostgresSecretConnection": {
+          "additionalProperties": false,
+          "properties": {
+            "credentials": {
+              "$ref": "#/$defs/resource_postgresql_config/$defs/SecretResourceCredentials"
+            },
+            "endpoint": {
+              "$ref": "#/$defs/resource_postgresql_config/$defs/PostgresEndpoint"
+            }
+          },
+          "required": [
+            "endpoint",
+            "credentials"
+          ],
+          "title": "PostgresSecretConnection",
+          "type": "object"
+        },
+        "PostgresSslMode": {
+          "enum": [
+            "disable",
+            "require"
+          ],
+          "title": "PostgresSslMode",
+          "type": "string"
+        },
+        "SecretResourceCredentials": {
+          "additionalProperties": false,
+          "properties": {
+            "secret_alias": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "title": "Secret Alias",
+              "type": "string"
+            },
+            "secret_resource": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "title": "Secret Resource",
+              "type": "string"
+            }
+          },
+          "required": [
+            "secret_resource",
+            "secret_alias"
+          ],
+          "title": "SecretResourceCredentials",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "command_timeout_seconds": {
+          "default": 30.0,
+          "exclusiveMinimum": 0,
+          "maximum": 300.0,
+          "title": "Command Timeout Seconds",
+          "type": "number"
+        },
+        "connection": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/resource_postgresql_config/$defs/PostgresSecretConnection"
+            },
+            {
+              "$ref": "#/$defs/resource_postgresql_config/$defs/PostgresRuntimeDsnConnection"
+            }
+          ],
+          "title": "Connection"
+        },
+        "max_pool_size": {
+          "default": 10,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Max Pool Size",
+          "type": "integer"
+        },
+        "max_result_bytes": {
+          "default": 10485760,
+          "maximum": 104857600,
+          "minimum": 1,
+          "title": "Max Result Bytes",
+          "type": "integer"
+        },
+        "max_rows": {
+          "default": 10000,
+          "maximum": 100000,
+          "minimum": 1,
+          "title": "Max Rows",
+          "type": "integer"
+        },
+        "min_pool_size": {
+          "default": 1,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Min Pool Size",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "connection"
+      ],
+      "title": "PostgresConfig",
+      "type": "object"
+    },
+    "resource_redis_config": {
+      "$defs": {
+        "RedisEndpoint": {
+          "additionalProperties": false,
+          "properties": {
+            "database": {
+              "default": 0,
+              "maximum": 65535,
+              "minimum": 0,
+              "title": "Database",
+              "type": "integer"
+            },
+            "host": {
+              "maxLength": 253,
+              "minLength": 1,
+              "title": "Host",
+              "type": "string"
+            },
+            "port": {
+              "default": 6379,
+              "maximum": 65535,
+              "minimum": 1,
+              "title": "Port",
+              "type": "integer"
+            },
+            "tls": {
+              "default": true,
+              "title": "Tls",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "host"
+          ],
+          "title": "RedisEndpoint",
+          "type": "object"
+        },
+        "RedisRuntimeUrlConnection": {
+          "additionalProperties": false,
+          "properties": {
+            "require_tls": {
+              "default": true,
+              "title": "Require Tls",
+              "type": "boolean"
+            },
+            "runtime_url": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "title": "Runtime Url",
+              "type": "string"
+            }
+          },
+          "required": [
+            "runtime_url"
+          ],
+          "title": "RedisRuntimeUrlConnection",
+          "type": "object"
+        },
+        "RedisSecretConnection": {
+          "additionalProperties": false,
+          "properties": {
+            "credentials": {
+              "$ref": "#/$defs/resource_redis_config/$defs/SecretResourceCredentials"
+            },
+            "endpoint": {
+              "$ref": "#/$defs/resource_redis_config/$defs/RedisEndpoint"
+            }
+          },
+          "required": [
+            "endpoint",
+            "credentials"
+          ],
+          "title": "RedisSecretConnection",
+          "type": "object"
+        },
+        "SecretResourceCredentials": {
+          "additionalProperties": false,
+          "properties": {
+            "secret_alias": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "title": "Secret Alias",
+              "type": "string"
+            },
+            "secret_resource": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+              "title": "Secret Resource",
+              "type": "string"
+            }
+          },
+          "required": [
+            "secret_resource",
+            "secret_alias"
+          ],
+          "title": "SecretResourceCredentials",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "connect_timeout_seconds": {
+          "default": 5.0,
+          "exclusiveMinimum": 0,
+          "maximum": 300.0,
+          "title": "Connect Timeout Seconds",
+          "type": "number"
+        },
+        "connection": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/resource_redis_config/$defs/RedisSecretConnection"
+            },
+            {
+              "$ref": "#/$defs/resource_redis_config/$defs/RedisRuntimeUrlConnection"
+            }
+          ],
+          "title": "Connection"
+        },
+        "default_ttl_seconds": {
+          "anyOf": [
+            {
+              "maximum": 31536000,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Default Ttl Seconds"
+        },
+        "key_prefix": {
+          "default": "",
+          "maxLength": 4096,
+          "title": "Key Prefix",
+          "type": "string"
+        },
+        "max_connections": {
+          "default": 20,
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Max Connections",
+          "type": "integer"
+        },
+        "max_value_bytes": {
+          "default": 1048576,
+          "maximum": 104857600,
+          "minimum": 1,
+          "title": "Max Value Bytes",
+          "type": "integer"
+        },
+        "operation_timeout_seconds": {
+          "default": 10.0,
+          "exclusiveMinimum": 0,
+          "maximum": 300.0,
+          "title": "Operation Timeout Seconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "connection"
+      ],
+      "title": "RedisConfig",
+      "type": "object"
+    },
+    "resource_s3_config": {
+      "additionalProperties": false,
+      "properties": {
+        "bucket": {
+          "maxLength": 63,
+          "minLength": 3,
+          "title": "Bucket",
+          "type": "string"
+        },
+        "endpoint_url": {
+          "anyOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Endpoint Url"
+        },
+        "expected_bucket_owner": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9]{12}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Bucket Owner"
+        },
+        "kms_key_id": {
+          "anyOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Kms Key Id"
+        },
+        "prefix": {
+          "default": "",
+          "maxLength": 768,
+          "title": "Prefix",
+          "type": "string"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region"
+        },
+        "retention_policies": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "minProperties": 1,
+          "title": "Retention Policies",
+          "type": "object"
+        },
+        "server_side_encryption": {
+          "default": "AES256",
+          "pattern": "^(AES256|aws:kms)$",
+          "title": "Server Side Encryption",
+          "type": "string"
+        }
+      },
+      "required": [
+        "bucket",
+        "retention_policies"
+      ],
+      "title": "S3ArchiveConfig",
+      "type": "object"
+    },
+    "resource_s3_object_config": {
+      "$defs": {
+        "S3ObjectOperation": {
+          "enum": [
+            "read",
+            "write",
+            "delete"
+          ],
+          "title": "S3ObjectOperation",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "allowed_operations": {
+          "items": {
+            "$ref": "#/$defs/resource_s3_object_config/$defs/S3ObjectOperation"
+          },
+          "minItems": 1,
+          "title": "Allowed Operations",
+          "type": "array",
+          "uniqueItems": true
+        },
+        "bucket": {
+          "maxLength": 63,
+          "minLength": 3,
+          "title": "Bucket",
+          "type": "string"
+        },
+        "endpoint_url": {
+          "anyOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Endpoint Url"
+        },
+        "expected_bucket_owner": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9]{12}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Bucket Owner"
+        },
+        "kms_key_id": {
+          "anyOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Kms Key Id"
+        },
+        "max_object_bytes": {
+          "default": 10485760,
+          "maximum": 104857600,
+          "minimum": 1,
+          "title": "Max Object Bytes",
+          "type": "integer"
+        },
+        "prefix": {
+          "maxLength": 768,
+          "minLength": 1,
+          "title": "Prefix",
+          "type": "string"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region"
+        },
+        "server_side_encryption": {
+          "default": "AES256",
+          "pattern": "^(AES256|aws:kms)$",
+          "title": "Server Side Encryption",
+          "type": "string"
+        }
+      },
+      "required": [
+        "bucket",
+        "prefix",
+        "allowed_operations"
+      ],
+      "title": "S3ObjectConfig",
+      "type": "object"
+    },
+    "resource_static_config": {
+      "additionalProperties": false,
+      "properties": {
+        "values": {
+          "additionalProperties": true,
+          "title": "Values",
+          "type": "object"
+        }
+      },
+      "title": "StaticConfigConfig",
+      "type": "object"
+    }
+  },
+  "$id": "https://justflow.dev/schemas/0.1.0/resources.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "resources": {
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/resource_aws_secrets_manager_config"
+              },
+              "provider": {
+                "const": "aws_secrets_manager",
+                "type": "string"
+              }
+            },
+            "required": [
+              "config"
+            ],
+            "title": "ResourceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/resource_aws_ssm_config"
+              },
+              "provider": {
+                "const": "aws_ssm",
+                "type": "string"
+              }
+            },
+            "required": [
+              "config"
+            ],
+            "title": "ResourceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/resource_dynamodb_config"
+              },
+              "provider": {
+                "const": "dynamodb",
+                "type": "string"
+              }
+            },
+            "required": [
+              "config"
+            ],
+            "title": "ResourceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/resource_memory_archive_config"
+              },
+              "provider": {
+                "const": "memory_archive",
+                "type": "string"
+              }
+            },
+            "required": [
+              "config"
+            ],
+            "title": "ResourceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/resource_memory_cache_config"
+              },
+              "provider": {
+                "const": "memory_cache",
+                "type": "string"
+              }
+            },
+            "required": [],
+            "title": "ResourceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/resource_postgresql_config"
+              },
+              "provider": {
+                "const": "postgresql",
+                "type": "string"
+              }
+            },
+            "required": [
+              "config"
+            ],
+            "title": "ResourceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/resource_redis_config"
+              },
+              "provider": {
+                "const": "redis",
+                "type": "string"
+              }
+            },
+            "required": [
+              "config"
+            ],
+            "title": "ResourceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/resource_s3_config"
+              },
+              "provider": {
+                "const": "s3",
+                "type": "string"
+              }
+            },
+            "required": [
+              "config"
+            ],
+            "title": "ResourceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/resource_s3_object_config"
+              },
+              "provider": {
+                "const": "s3_object",
+                "type": "string"
+              }
+            },
+            "required": [
+              "config"
+            ],
+            "title": "ResourceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/resource_static_config"
+              },
+              "provider": {
+                "const": "static",
+                "type": "string"
+              }
+            },
+            "required": [],
+            "title": "ResourceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "class": {
+                "maxLength": 512,
+                "minLength": 3,
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)+$",
+                "type": "string"
+              },
+              "config": {
+                "additionalProperties": true,
+                "title": "Config",
+                "type": "object"
+              }
+            },
+            "required": [
+              "class"
+            ],
+            "title": "ResourceConfig",
+            "type": "object"
+          }
+        ]
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+        "title": "Workflow",
+        "type": "string"
+      },
+      "title": "Resources",
+      "type": "object"
+    }
+  },
+  "required": [
+    "resources"
+  ],
+  "title": "Justflow resources.yaml",
+  "type": "object"
+}
