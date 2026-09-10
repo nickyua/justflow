@@ -1,0 +1,52 @@
+site_name: Justflow
+site_description: Durable YAML workflows on Temporal
+site_url: https://nickyua.github.io/justflow/
+repo_url: https://github.com/nickyua/justflow
+repo_name: nickyua/justflow
+docs_dir: docs
+site_dir: site
+exclude_docs: |
+  scheduling-workflows-spec.md
+strict: true
+theme:
+  name: mkdocs
+  locale: en
+nav:
+  - Home: index.md
+  - Getting started: getting-started.md
+  - Concepts: concepts.md
+  - Authoring:
+      - Overview: authoring/index.md
+      - Workflows: authoring/workflows.md
+      - Triggers: authoring/triggers.md
+  - Integrations: integrations.md
+  - Custom providers: custom-providers.md
+  - Operations:
+      - Run locally: operations/local-deployment.md
+      - Deployment: operations/deployment.md
+      - Configuration lifecycle: operations/configuration.md
+      - Scheduled starts: operations/scheduled-starts.md
+      - Customer workflows: operations/customer-workflows.md
+      - Security: operations/security.md
+      - Authentication and dashboards: operations/authentication.md
+      - Troubleshooting: operations/troubleshooting.md
+      - Downstream CI: operations/downstream-ci.md
+  - AWS:
+      - Deployment: aws/deployment.md
+      - Data services and ECS: aws/data-services.md
+      - Self-hosted Temporal on Fargate: aws/self-hosted-temporal.md
+  - Reference:
+      - CLI: reference/generated/cli.md
+      - Settings and environment: reference/generated/settings.md
+      - Error taxonomy: reference/generated/errors.md
+      - Python API: reference/generated/python-api.md
+      - Schemas: reference/generated/schemas.md
+      - HTTP API: reference/http-api.md
+      - Authorization actions: reference/generated/authorization-actions.md
+  - Upgrade guide: upgrading.md
+  - Limitations: limitations.md
+  - Support: support.md
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables

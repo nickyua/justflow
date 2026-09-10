@@ -1,0 +1,74 @@
+workflow: record_processing
+description: >
+  End-to-end test workflow using only direct transport.
+
+on_complete:
+  resource: store
+  path: audit/${request_id}.json
+  retention_policy: test
+
+steps:
+  fetch_record:
+    service: fetch_record
+    action: fetch_record
+
+  validate_record:
+    service: validate_record
+    action: validate_record
+
+  enrich_record:
+    service: enrich_record
+    action: enrich_record
+
+  classify_record:
+    service: classify_record
+    action: classify_record
+
+  format_result:
+    service: format_result
+    action: format_result
+
+flow:
+  - name: fetch
+    op: fetch_record
+    output: record
+    then: validate
+
+  - name: validate
+    op: validate_record
+    input: fetch.record
+    output: validation
+    on_result:
+      - when: input.is_valid == true
+        then: enrich
+      - default: rejected
+
+  - name: rejected
+    terminal: true
+    reason: no_valid_items
+
+  - name: enrich
+    op: enrich_record
+    input:
+      record: fetch.record
+      validation: validate.validation
+    output: enriched
+    then: classify
+
+  - name: classify
+    op: classify_record
+    input: enrich.enriched
+    output: classification
+    then: format
+
+  - name: format
+    op: format_result
+    input:
+      record_id: fetch.record.record_id
+      category: classify.classification.category
+      accepted: classify.classification.accepted
+    output: result
+    then: done
+
+  - name: done
+    terminal: true

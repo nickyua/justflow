@@ -1,0 +1,252 @@
+{
+  "$defs": {
+    "ComponentReference": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z][A-Za-z0-9._-]*$",
+          "title": "Name",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "title": "ComponentReference",
+      "type": "object"
+    },
+    "ResourceAuthoringGrant": {
+      "additionalProperties": false,
+      "properties": {
+        "capabilities": {
+          "items": {
+            "$ref": "#/$defs/ResourceCapability"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "title": "Capabilities",
+          "type": "array",
+          "uniqueItems": true
+        },
+        "provider": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Provider",
+          "type": "string"
+        }
+      },
+      "required": [
+        "provider",
+        "capabilities"
+      ],
+      "title": "ResourceAuthoringGrant",
+      "type": "object"
+    },
+    "ResourceCapability": {
+      "enum": [
+        "archive",
+        "cache",
+        "config",
+        "database",
+        "key-value",
+        "object",
+        "secret-reader"
+      ],
+      "title": "ResourceCapability",
+      "type": "string"
+    },
+    "ServiceAuthoringGrant": {
+      "additionalProperties": false,
+      "properties": {
+        "transport": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Transport",
+          "type": "string"
+        }
+      },
+      "required": [
+        "transport"
+      ],
+      "title": "ServiceAuthoringGrant",
+      "type": "object"
+    },
+    "TemporalIsolationMode": {
+      "enum": [
+        "shared",
+        "dedicated"
+      ],
+      "title": "TemporalIsolationMode",
+      "type": "string"
+    },
+    "TemporalIsolationPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "$ref": "#/$defs/TemporalIsolationMode"
+        },
+        "namespace_identity": {
+          "maxLength": 64,
+          "minLength": 64,
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Namespace Identity",
+          "type": "string"
+        },
+        "runtime_credential_aliases": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 1000,
+          "title": "Runtime Credential Aliases",
+          "type": "array",
+          "uniqueItems": true
+        },
+        "storage_prefix_identity": {
+          "maxLength": 64,
+          "minLength": 64,
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Storage Prefix Identity",
+          "type": "string"
+        },
+        "task_queue_identity": {
+          "maxLength": 64,
+          "minLength": 64,
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Task Queue Identity",
+          "type": "string"
+        },
+        "worker_deployment_identity": {
+          "maxLength": 64,
+          "minLength": 64,
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Worker Deployment Identity",
+          "type": "string"
+        }
+      },
+      "required": [
+        "mode",
+        "namespace_identity",
+        "task_queue_identity",
+        "worker_deployment_identity",
+        "storage_prefix_identity"
+      ],
+      "title": "TemporalIsolationPolicy",
+      "type": "object"
+    },
+    "TriggerBindingGrant": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/TriggerKind"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "TriggerBindingGrant",
+      "type": "object"
+    },
+    "TriggerKind": {
+      "enum": [
+        "api",
+        "schedule",
+        "webhook",
+        "event",
+        "broker",
+        "host"
+      ],
+      "title": "TriggerKind",
+      "type": "string"
+    }
+  },
+  "$id": "https://justflow.dev/schemas/0.1.0/tenant-authoring-policy.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "component_catalog_revision": {
+      "maxLength": 64,
+      "minLength": 64,
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Component Catalog Revision",
+      "type": "string"
+    },
+    "resource_bindings": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ResourceAuthoringGrant"
+      },
+      "maxProperties": 1000,
+      "title": "Resource Bindings",
+      "type": "object"
+    },
+    "scope_digest": {
+      "maxLength": 64,
+      "minLength": 64,
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Scope Digest",
+      "type": "string"
+    },
+    "secret_aliases": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 1000,
+      "title": "Secret Aliases",
+      "type": "array",
+      "uniqueItems": true
+    },
+    "service_bindings": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ServiceAuthoringGrant"
+      },
+      "maxProperties": 1000,
+      "title": "Service Bindings",
+      "type": "object"
+    },
+    "step_components": {
+      "items": {
+        "$ref": "#/$defs/ComponentReference"
+      },
+      "maxItems": 1000,
+      "title": "Step Components",
+      "type": "array",
+      "uniqueItems": true
+    },
+    "temporal": {
+      "$ref": "#/$defs/TemporalIsolationPolicy"
+    },
+    "trigger_bindings": {
+      "additionalProperties": {
+        "$ref": "#/$defs/TriggerBindingGrant"
+      },
+      "maxProperties": 1000,
+      "title": "Trigger Bindings",
+      "type": "object"
+    },
+    "trigger_components": {
+      "items": {
+        "$ref": "#/$defs/ComponentReference"
+      },
+      "maxItems": 1000,
+      "title": "Trigger Components",
+      "type": "array",
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "scope_digest",
+    "component_catalog_revision",
+    "temporal"
+  ],
+  "title": "Justflow tenant authoring policy",
+  "type": "object"
+}

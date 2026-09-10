@@ -1,0 +1,50 @@
+{
+  "$defs": {
+    "ApplicationIdentity": {
+      "description": "Host-defined application identity within a tenant.",
+      "maxLength": 64,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "ApplicationIdentity",
+      "type": "string"
+    },
+    "EnvironmentIdentity": {
+      "description": "Host-defined deployment environment identity within an application.",
+      "maxLength": 64,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "EnvironmentIdentity",
+      "type": "string"
+    },
+    "TenantIdentity": {
+      "description": "Host-defined tenant identity retained only at trusted boundaries.",
+      "maxLength": 64,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "TenantIdentity",
+      "type": "string"
+    }
+  },
+  "$id": "https://justflow.dev/schemas/0.1.0/runtime-scope.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "One validated tenant/application/environment authority boundary.",
+  "properties": {
+    "application": {
+      "$ref": "#/$defs/ApplicationIdentity"
+    },
+    "environment": {
+      "$ref": "#/$defs/EnvironmentIdentity"
+    },
+    "tenant": {
+      "$ref": "#/$defs/TenantIdentity"
+    }
+  },
+  "required": [
+    "tenant",
+    "application",
+    "environment"
+  ],
+  "title": "Justflow runtime scope",
+  "type": "object"
+}

@@ -1,0 +1,7 @@
+services:
+  reporting:
+    transport: direct
+    transport_config:
+      class: scheduled_reporting.actions.LocalReportingService
+    dispatch_timeout_sec: 10
+    retries: 0

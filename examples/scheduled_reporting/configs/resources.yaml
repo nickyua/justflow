@@ -1,0 +1,11 @@
+resources:
+  reporting_config:
+    provider: static
+    config:
+      values:
+        report_title: Daily synthetic activity report
+  audit_store:
+    provider: memory_archive
+    config:
+      retention_policies:
+        local-demo: 86400

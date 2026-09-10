@@ -1,0 +1,21 @@
+triggers:
+  customer_api:
+    kind: api
+    workflow: customer_check
+  batch_api:
+    kind: api
+    workflow: customer_batch
+  daily_customer_batch:
+    kind: schedule
+    workflow: customer_batch
+    input:
+      cursor: 0
+      page_size: 25
+    spec:
+      kind: cron
+      expressions:
+        - 0 7 * * *
+    timezone: Europe/Zurich
+    overlap_policy: buffer_one
+    catch_up_window_seconds: 3600
+    paused: true

@@ -1,0 +1,7 @@
+Justflow
+Copyright 2026 Mykyta Bakunov
+
+This product includes Mermaid 11.16.0, distributed under the MIT License.
+The vendored asset provenance and license are included in
+src/justflow/visualization/static/MERMAID_ASSET.md and
+src/justflow/visualization/static/MERMAID_LICENSE.

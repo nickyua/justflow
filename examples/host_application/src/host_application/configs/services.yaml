@@ -1,0 +1,7 @@
+services:
+  greeting:
+    transport: direct
+    transport_config:
+      class: host_application.actions.HostGreetingService
+    dispatch_timeout_sec: 10
+    retries: 0

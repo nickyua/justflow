@@ -1,0 +1,6 @@
+resources:
+  audit_store:
+    provider: memory_archive
+    config:
+      retention_policies:
+        local-demo: 86400

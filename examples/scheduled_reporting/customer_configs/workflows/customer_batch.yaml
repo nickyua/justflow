@@ -1,0 +1,53 @@
+workflow: customer_batch
+description: Fetch one bounded customer page and run a separate child execution for each customer.
+input_schema: scheduled_reporting.customers.PageRequest
+output_schema: scheduled_reporting.customers.BatchSummary
+result: aggregate.summary
+params:
+  cursor: "${cursor}"
+  page_size: "${page_size}"
+steps:
+  fetch:
+    target:
+      kind: service
+      service: customers
+      action: fetch_page
+    required_resources:
+      - customer_directory
+    output_schema: scheduled_reporting.customers.CustomerPage
+  inspect:
+    target:
+      kind: workflow
+      workflow: customer_check
+  summarize:
+    target:
+      kind: service
+      service: customers
+      action: summarize
+flow:
+  - name: fetch
+    op: fetch
+    input:
+      cursor: cursor
+      page_size: page_size
+    output: page
+    then: customers
+  - name: customers
+    op: inspect
+    input: fetch.page
+    for_each: input.customers
+    as: customer
+    parallel: true
+    max_concurrency: 4
+    on_iteration_fail: collect
+    output: outcomes
+    then: aggregate
+  - name: aggregate
+    op: summarize
+    input:
+      outcomes: customers.outcomes
+      next_cursor: fetch.page.next_cursor
+    output: summary
+    then: done
+  - name: done
+    terminal: true

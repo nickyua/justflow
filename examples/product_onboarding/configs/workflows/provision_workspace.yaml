@@ -1,0 +1,32 @@
+workflow: provision_workspace
+description: Provision one workspace through a deterministic local service fake.
+
+input_schema: product_onboarding.contracts.OnboardingRequest
+output_schema: product_onboarding.contracts.ProvisionedWorkspace
+result: provision.workspace
+
+params:
+  customer_ref: "${customer_ref}"
+  plan: "${plan}"
+  simulate_provisioning_failure: "${simulate_provisioning_failure}"
+
+steps:
+  provision_workspace:
+    target:
+      kind: service
+      service: onboarding
+      action: provision_workspace
+    output_schema: product_onboarding.contracts.ProvisionedWorkspace
+
+flow:
+  - name: provision
+    op: provision_workspace
+    input:
+      customer_ref: customer_ref
+      plan: plan
+      simulate_provisioning_failure: simulate_provisioning_failure
+    output: workspace
+    then: done
+
+  - name: done
+    terminal: true

@@ -1,0 +1,526 @@
+{
+  "$defs": {
+    "transport_direct_config": {
+      "additionalProperties": false,
+      "properties": {
+        "class": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Class",
+          "type": "string"
+        }
+      },
+      "required": [
+        "class"
+      ],
+      "title": "DirectTransportConfig",
+      "type": "object"
+    },
+    "transport_grpc_config": {
+      "$defs": {
+        "GrpcInsecureLocalSecurity": {
+          "additionalProperties": false,
+          "properties": {
+            "mode": {
+              "const": "insecure_local",
+              "default": "insecure_local",
+              "title": "Mode",
+              "type": "string"
+            }
+          },
+          "title": "GrpcInsecureLocalSecurity",
+          "type": "object"
+        },
+        "GrpcTlsSecurity": {
+          "additionalProperties": false,
+          "properties": {
+            "mode": {
+              "const": "tls",
+              "default": "tls",
+              "title": "Mode",
+              "type": "string"
+            },
+            "profile": {
+              "maxLength": 128,
+              "minLength": 1,
+              "title": "Profile",
+              "type": "string"
+            }
+          },
+          "required": [
+            "profile"
+          ],
+          "title": "GrpcTlsSecurity",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "address": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Address",
+          "type": "string"
+        },
+        "security": {
+          "discriminator": {
+            "mapping": {
+              "insecure_local": "#/$defs/GrpcInsecureLocalSecurity",
+              "tls": "#/$defs/GrpcTlsSecurity"
+            },
+            "propertyName": "mode"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/transport_grpc_config/$defs/GrpcTlsSecurity"
+            },
+            {
+              "$ref": "#/$defs/transport_grpc_config/$defs/GrpcInsecureLocalSecurity"
+            }
+          ],
+          "title": "Security"
+        }
+      },
+      "required": [
+        "address",
+        "security"
+      ],
+      "title": "GrpcTransportConfig",
+      "type": "object"
+    },
+    "transport_http_config": {
+      "$defs": {
+        "HttpRedirectPolicy": {
+          "enum": [
+            "deny",
+            "same_origin"
+          ],
+          "title": "HttpRedirectPolicy",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "base_url": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Base Url",
+          "type": "string"
+        },
+        "max_response_bytes": {
+          "default": 524288,
+          "minimum": 1,
+          "title": "Max Response Bytes",
+          "type": "integer"
+        },
+        "redirects": {
+          "$ref": "#/$defs/transport_http_config/$defs/HttpRedirectPolicy",
+          "default": "deny"
+        }
+      },
+      "required": [
+        "base_url"
+      ],
+      "title": "HttpTransportConfig",
+      "type": "object"
+    },
+    "transport_lambda_config": {
+      "additionalProperties": false,
+      "properties": {
+        "function_name": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Function Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "function_name"
+      ],
+      "title": "LambdaTransportConfig",
+      "type": "object"
+    },
+    "transport_queue_config": {
+      "additionalProperties": false,
+      "properties": {
+        "broker": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Broker",
+          "type": "string"
+        },
+        "destination": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Destination",
+          "type": "string"
+        },
+        "idempotency": {
+          "enum": [
+            "durable",
+            "none"
+          ],
+          "title": "Idempotency",
+          "type": "string"
+        }
+      },
+      "required": [
+        "broker",
+        "destination",
+        "idempotency"
+      ],
+      "title": "QueueTransportConfig",
+      "type": "object"
+    }
+  },
+  "$id": "https://justflow.dev/schemas/0.1.0/services.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "services": {
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "connect_timeout_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 300,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Connect Timeout Sec"
+              },
+              "dispatch_timeout_sec": {
+                "maximum": 31536000,
+                "minimum": 1,
+                "title": "Dispatch Timeout Sec",
+                "type": "integer"
+              },
+              "params": {
+                "additionalProperties": true,
+                "title": "Params",
+                "type": "object"
+              },
+              "response_timeout_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 31536000,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Response Timeout Sec"
+              },
+              "retries": {
+                "maximum": 100,
+                "minimum": 0,
+                "title": "Retries",
+                "type": "integer"
+              },
+              "transport": {
+                "const": "direct",
+                "type": "string"
+              },
+              "transport_config": {
+                "$ref": "#/$defs/transport_direct_config"
+              }
+            },
+            "required": [
+              "dispatch_timeout_sec",
+              "retries",
+              "transport",
+              "transport_config"
+            ],
+            "title": "ServiceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "connect_timeout_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 300,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Connect Timeout Sec"
+              },
+              "dispatch_timeout_sec": {
+                "maximum": 31536000,
+                "minimum": 1,
+                "title": "Dispatch Timeout Sec",
+                "type": "integer"
+              },
+              "params": {
+                "additionalProperties": true,
+                "title": "Params",
+                "type": "object"
+              },
+              "response_timeout_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 31536000,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Response Timeout Sec"
+              },
+              "retries": {
+                "maximum": 100,
+                "minimum": 0,
+                "title": "Retries",
+                "type": "integer"
+              },
+              "transport": {
+                "const": "grpc",
+                "type": "string"
+              },
+              "transport_config": {
+                "$ref": "#/$defs/transport_grpc_config"
+              }
+            },
+            "required": [
+              "dispatch_timeout_sec",
+              "retries",
+              "transport",
+              "transport_config"
+            ],
+            "title": "ServiceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "connect_timeout_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 300,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Connect Timeout Sec"
+              },
+              "dispatch_timeout_sec": {
+                "maximum": 31536000,
+                "minimum": 1,
+                "title": "Dispatch Timeout Sec",
+                "type": "integer"
+              },
+              "params": {
+                "additionalProperties": true,
+                "title": "Params",
+                "type": "object"
+              },
+              "response_timeout_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 31536000,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Response Timeout Sec"
+              },
+              "retries": {
+                "maximum": 100,
+                "minimum": 0,
+                "title": "Retries",
+                "type": "integer"
+              },
+              "transport": {
+                "const": "http",
+                "type": "string"
+              },
+              "transport_config": {
+                "$ref": "#/$defs/transport_http_config"
+              }
+            },
+            "required": [
+              "dispatch_timeout_sec",
+              "retries",
+              "transport",
+              "transport_config"
+            ],
+            "title": "ServiceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "connect_timeout_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 300,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Connect Timeout Sec"
+              },
+              "dispatch_timeout_sec": {
+                "maximum": 31536000,
+                "minimum": 1,
+                "title": "Dispatch Timeout Sec",
+                "type": "integer"
+              },
+              "params": {
+                "additionalProperties": true,
+                "title": "Params",
+                "type": "object"
+              },
+              "response_timeout_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 31536000,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Response Timeout Sec"
+              },
+              "retries": {
+                "maximum": 100,
+                "minimum": 0,
+                "title": "Retries",
+                "type": "integer"
+              },
+              "transport": {
+                "const": "lambda",
+                "type": "string"
+              },
+              "transport_config": {
+                "$ref": "#/$defs/transport_lambda_config"
+              }
+            },
+            "required": [
+              "dispatch_timeout_sec",
+              "retries",
+              "transport",
+              "transport_config"
+            ],
+            "title": "ServiceConfig",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "connect_timeout_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 300,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Connect Timeout Sec"
+              },
+              "dispatch_timeout_sec": {
+                "maximum": 31536000,
+                "minimum": 1,
+                "title": "Dispatch Timeout Sec",
+                "type": "integer"
+              },
+              "params": {
+                "additionalProperties": true,
+                "title": "Params",
+                "type": "object"
+              },
+              "response_timeout_sec": {
+                "anyOf": [
+                  {
+                    "maximum": 31536000,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Response Timeout Sec"
+              },
+              "retries": {
+                "maximum": 100,
+                "minimum": 0,
+                "title": "Retries",
+                "type": "integer"
+              },
+              "transport": {
+                "const": "queue",
+                "type": "string"
+              },
+              "transport_config": {
+                "$ref": "#/$defs/transport_queue_config"
+              }
+            },
+            "required": [
+              "dispatch_timeout_sec",
+              "retries",
+              "transport",
+              "transport_config"
+            ],
+            "title": "ServiceConfig",
+            "type": "object"
+          }
+        ]
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+        "title": "Workflow",
+        "type": "string"
+      },
+      "title": "Services",
+      "type": "object"
+    }
+  },
+  "required": [
+    "services"
+  ],
+  "title": "Justflow services.yaml",
+  "type": "object"
+}

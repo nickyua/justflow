@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <title>Justflow operations</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="/admin" aria-label="Justflow operations home">
+          <span class="brand-mark" aria-hidden="true">J</span>
+          <span class="brand-name">Justflow <small>Beta</small></span>
+        </a>
+
+        <nav class="primary-nav" aria-label="Administration sections">
+          <button class="nav-item" type="button" data-view="overview">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z" />
+            </svg>
+            Overview
+          </button>
+          <button class="nav-item is-active" type="button" data-view="workflows">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 4a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm10 10a3 3 0 1 0 0 6 3 3 0 0 0 0-6ZM9.8 7h4.7A2.5 2.5 0 0 1 17 9.5V14h-2V9.5a.5.5 0 0 0-.5-.5H9.8V7Z" />
+            </svg>
+            Workflows
+          </button>
+          <button class="nav-item" type="button" data-view="runs">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3a9 9 0 1 0 9 9h-2a7 7 0 1 1-2.05-4.95L14 10h7V3l-2.63 2.63A8.96 8.96 0 0 0 12 3Zm-1 5v5l4 2 .9-1.79-2.9-1.45V8h-2Z" />
+            </svg>
+            Runs
+            <span id="nav-run-count" class="nav-count">—</span>
+          </button>
+          <button class="nav-item" type="button" data-view="triggers">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 2h2v2h6V2h2v2h3v18H4V4h3V2Zm11 8H6v10h12V10ZM6 6v2h12V6H6Zm2 6h3v3H8v-3Z" />
+            </svg>
+            Triggers
+          </button>
+          <button class="nav-item" type="button" data-view="editor">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 4h10v2H4V4Zm0 7h16v2H4v-2Zm0 7h10v2H4v-2Zm13-15 4 2-4 2V3Zm0 14 4 2-4 2v-4Z" />
+            </svg>
+            Editor
+          </button>
+          <button id="nav-releases" class="nav-item" type="button" data-view="releases" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2 4 6v6c0 5 3.4 8.4 8 10 4.6-1.6 8-5 8-10V6l-8-4Zm0 2.2 6 3v4.8c0 3.9-2.6 6.7-6 8-3.4-1.3-6-4.1-6-8V7.2l6-3ZM11 8v5l3.5 2 .9-1.6-2.4-1.4V8h-2Z" />
+            </svg>
+            Releases
+          </button>
+          <button class="nav-item" type="button" data-view="system">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 5h16v10H4V5Zm2 2v6h12V7H6Zm-2 10h16v2H4v-2Z" />
+            </svg>
+            System
+          </button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <span id="connection-dot" class="connection-dot" aria-hidden="true"></span>
+          <div>
+            <strong id="connection-state">Connecting</strong>
+            <span id="scope-label">Authorized scope</span>
+          </div>
+        </div>
+      </aside>
+
+      <div class="workspace">
+        <header class="topbar">
+          <div class="breadcrumb">
+            <span>Operations</span>
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" /></svg>
+            <strong id="current-view-label">Workflows</strong>
+          </div>
+          <div class="topbar-actions">
+            <nav id="metrics-links" class="metrics-links" aria-label="Metrics links"></nav>
+            <button id="refresh-dashboard" class="button button-secondary" type="button">
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <path d="M16 7a7 7 0 1 0 .38 5H14.2A5 5 0 1 1 14 7H11l4-4 4 4h-3Z" />
+              </svg>
+              Refresh
+            </button>
+          </div>
+        </header>
+
+        <main class="content">
+          <section id="view-overview" class="view-panel" data-panel="overview" hidden>
+            <div class="page-heading">
+              <div>
+                <h1>Overview</h1>
+                <p>Health and recent activity for your current scope.</p>
+              </div>
+              <span id="runtime-status" class="status-badge status-unknown">Checking runtime</span>
+            </div>
+
+            <div class="stat-grid">
+              <article class="stat-card">
+                <span>Registered workflows</span>
+                <strong id="workflow-count">—</strong>
+                <small>Available to new executions</small>
+              </article>
+              <article class="stat-card">
+                <span>Running</span>
+                <strong id="live-run-count">—</strong>
+                <small>In the loaded results</small>
+              </article>
+              <article class="stat-card">
+                <span>Recent failures</span>
+                <strong id="failed-run-count">—</strong>
+                <small>In the loaded results</small>
+              </article>
+              <article class="stat-card">
+                <span>Triggers</span>
+                <strong id="schedule-count">—</strong>
+                <small>Managed in this scope</small>
+              </article>
+            </div>
+
+            <div class="overview-grid">
+              <section class="surface">
+                <div class="surface-heading">
+                  <div><h2>Recent failures</h2><p>Recent failures in the loaded results.</p></div>
+                  <button class="text-button" type="button" data-view-link="runs">View runs</button>
+                </div>
+                <div id="failure-list" class="compact-list"></div>
+              </section>
+              <section class="surface">
+                <div class="surface-heading">
+                  <div><h2>Runtime</h2><p>Readiness summary for this process.</p></div>
+                  <button class="text-button" type="button" data-view-link="system">View system</button>
+                </div>
+                <div id="overview-runtime-summary" class="compact-list"></div>
+              </section>
+            </div>
+          </section>
+
+          <section id="view-workflows" class="view-panel" data-panel="workflows">
+            <div class="page-heading">
+              <div>
+                <h1>Workflows</h1>
+                <p>Workflows and the definitions used for new runs.</p>
+              </div>
+              <button id="new-workflow-draft" class="button button-primary" type="button">
+                New workflow
+              </button>
+            </div>
+
+            <div class="notice notice-neutral">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M9 8h2v7H9V8Zm0-3h2v2H9V5Zm1-4a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm0 2a7 7 0 1 1 0 14 7 7 0 0 1 0-14Z" /></svg>
+              <div>
+                <strong>Workflow definitions are immutable.</strong>
+                Editing or retiring a workflow creates a draft. Activating it changes future runs. Existing runs keep their original definitions.
+              </div>
+            </div>
+
+            <section class="surface table-surface">
+              <div class="table-toolbar">
+                <label class="search-field">
+                  <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8.5 3a5.5 5.5 0 1 0 3.44 9.8L16.15 17 17.5 15.65l-4.2-4.2A5.5 5.5 0 0 0 8.5 3Zm0 2a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7Z" /></svg>
+                  <span class="sr-only">Filter the loaded workflows page</span>
+                  <input id="workflow-search" type="search" placeholder="Filter this page" autocomplete="off" />
+                </label>
+                <span id="workflow-result-count" class="result-count">—</span>
+              </div>
+              <div class="table-scroll">
+                <table>
+                  <thead><tr><th>Workflow name</th><th>Active definition</th><th>Versions</th><th>Status</th><th><span class="sr-only">Actions</span></th></tr></thead>
+                  <tbody id="workflow-list"></tbody>
+                </table>
+              </div>
+              <p id="workflow-draft-note" class="surface-footnote" hidden></p>
+              <div class="load-more-row"><button id="load-more-workflows" class="button button-secondary" type="button" hidden>Load more</button></div>
+            </section>
+
+          </section>
+
+          <section id="view-workflow" class="view-panel" data-panel="workflow" hidden>
+            <button id="back-to-workflows" class="back-link" type="button">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m12.8 4.6-1.4-1.4L4.6 10l6.8 6.8 1.4-1.4L8.4 11H17V9H8.4l4.4-4.4Z" /></svg>
+              All workflows
+            </button>
+            <div class="page-heading workflow-heading">
+              <div>
+                <div class="eyebrow-row"><span class="status-badge status-active">Active</span><code id="workflow-detail-digest">—</code></div>
+                <h1 id="workflow-detail-name">Workflow</h1>
+                <p id="workflow-detail-description">Loading workflow definition…</p>
+              </div>
+              <div class="heading-actions">
+                <button id="workflow-detail-start" class="button button-secondary" type="button" hidden>Start run</button>
+                <button id="workflow-detail-schedule" class="button button-secondary" type="button">Add schedule</button>
+                <button id="workflow-detail-edit" class="button button-primary" type="button">Edit YAML</button>
+              </div>
+            </div>
+
+            <fieldset class="filter-tabs workflow-tabs">
+              <legend class="sr-only">Workflow detail sections</legend>
+              <button class="filter-tab is-active" type="button" data-workflow-tab="overview">Overview</button>
+              <button class="filter-tab" type="button" data-workflow-tab="definition">Definition</button>
+              <button class="filter-tab" type="button" data-workflow-tab="runs">Runs</button>
+              <button class="filter-tab" type="button" data-workflow-tab="triggers">Triggers</button>
+            </fieldset>
+
+            <div data-workflow-panel="overview">
+              <div class="workflow-detail-grid">
+                <section class="surface graph-surface">
+                  <div class="surface-heading">
+                    <div><h2>Workflow map</h2><p>Steps in the active workflow definition.</p></div>
+                    <div class="graph-legend"><span><i class="legend-node"></i>Step</span><span><i class="legend-node is-terminal"></i>Terminal</span><span><i class="legend-node is-failed"></i>Failed</span></div>
+                  </div>
+                  <div id="workflow-graph" class="workflow-graph"></div>
+                  <details class="graph-fallback">
+                    <summary>Graph as text</summary>
+                    <div id="workflow-graph-table"></div>
+                  </details>
+                </section>
+                <aside class="surface workflow-metadata">
+                  <div class="surface-heading"><div><h2>Definition</h2><p>The published definition used for this workflow.</p></div></div>
+                  <div id="workflow-detail-metadata" class="metadata-stack"></div>
+                </aside>
+              </div>
+            </div>
+
+            <div data-workflow-panel="definition" class="section-stack" hidden>
+              <div class="overview-grid">
+                <section class="surface table-surface">
+                  <div class="surface-heading"><div><h2>Input parameters</h2><p>What a caller provides when starting this workflow.</p></div></div>
+                  <div class="table-scroll"><table><thead><tr><th>Parameter</th><th>Kind</th><th>Referenced as</th></tr></thead><tbody id="workflow-input-list"></tbody></table></div>
+                  <p id="workflow-input-contract" class="surface-footnote"></p>
+                  <pre id="workflow-input-schema" class="declaration-view" hidden></pre>
+                </section>
+                <section class="surface table-surface">
+                  <div class="surface-heading"><div><h2>Start sources</h2><p>Configured ways to start this workflow.</p></div></div>
+                  <div class="table-scroll"><table><thead><tr><th>Source</th><th>State</th><th>Details</th></tr></thead><tbody id="workflow-start-sources"></tbody></table></div>
+                </section>
+              </div>
+              <section class="surface table-surface">
+                <div class="surface-heading"><div><h2>Steps</h2><p>Actions, services, and resources used by this workflow.</p></div></div>
+                <div class="table-scroll"><table><thead><tr><th>Operation</th><th>Service</th><th>Action</th><th>Resources</th></tr></thead><tbody id="workflow-step-list"></tbody></table></div>
+                <p id="workflow-archival-note" class="surface-footnote" hidden></p>
+              </section>
+              <section class="surface">
+                <div class="surface-heading">
+                  <div><h2>Active declaration</h2><p id="workflow-declaration-note">Published YAML. Draft edits appear in the editor.</p></div>
+                  <button id="workflow-declaration-copy" class="text-button" type="button" hidden>Copy full YAML</button>
+                </div>
+                <fieldset id="workflow-declaration-tabs" class="filter-tabs declaration-tabs" hidden></fieldset>
+                <div id="workflow-declaration-editor" class="editor-surface declaration-editor" hidden>
+                  <textarea id="workflow-declaration" spellcheck="false" readonly aria-label="Active workflow declaration"></textarea>
+                </div>
+              </section>
+              <section class="surface table-surface">
+                <div class="surface-heading"><div><h2>Retained definitions</h2><p>Versions kept for deterministic replay.</p></div></div>
+                <div class="table-scroll"><table><thead><tr><th>Definition digest</th><th>State</th></tr></thead><tbody id="workflow-definition-list"></tbody></table></div>
+              </section>
+            </div>
+
+            <div data-workflow-panel="runs" hidden>
+              <section class="surface table-surface">
+                <div class="surface-heading"><div><h2>Recent runs</h2><p>Recent runs of this workflow.</p></div></div>
+                <div class="table-scroll"><table><thead><tr><th>Status</th><th>Workflow</th><th>Workflow ID</th><th>Run ID</th><th>Started</th><th>Duration</th><th>Failed step</th></tr></thead><tbody id="workflow-run-list"></tbody></table></div>
+                <div class="load-more-row"><button id="load-more-workflow-runs" class="button button-secondary" type="button" hidden>Load more</button></div>
+              </section>
+            </div>
+
+            <div data-workflow-panel="triggers" hidden>
+              <section class="surface table-surface">
+                <div class="surface-heading"><div><h2>Schedule triggers</h2><p>Recurring schedules for this workflow.</p></div><button id="workflow-inline-schedule" class="text-button" type="button">Add</button></div>
+                <div class="table-scroll"><table><thead><tr><th>Schedule</th><th>State</th><th>Next run</th></tr></thead><tbody id="workflow-schedule-list"></tbody></table></div>
+                <p id="workflow-schedule-note" class="surface-footnote" hidden></p>
+              </section>
+            </div>
+          </section>
+
+          <section id="view-runs" class="view-panel" data-panel="runs" hidden>
+            <div class="page-heading">
+              <div><h1>Workflow runs</h1><p>Live and recently failed executions visible to this scope.</p></div>
+            </div>
+
+            <section class="surface table-surface">
+              <div class="table-toolbar run-toolbar">
+                <fieldset class="filter-tabs">
+                  <legend class="sr-only">Run status filter</legend>
+                  <button class="filter-tab is-active" type="button" data-run-filter="all">All</button>
+                  <button class="filter-tab" type="button" data-run-filter="running">Running</button>
+                  <button class="filter-tab" type="button" data-run-filter="completed">Completed</button>
+                  <button class="filter-tab" type="button" data-run-filter="failed">Failed</button>
+                </fieldset>
+                <label class="search-field">
+                  <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8.5 3a5.5 5.5 0 1 0 3.44 9.8L16.15 17 17.5 15.65l-4.2-4.2A5.5 5.5 0 0 0 8.5 3Zm0 2a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7Z" /></svg>
+                  <span class="sr-only">Filter the loaded runs page</span>
+                  <input id="run-search" type="search" placeholder="Filter this page" autocomplete="off" />
+                </label>
+                <span id="run-result-count" class="result-count">—</span>
+              </div>
+              <div class="table-scroll">
+                <table>
+                  <thead><tr><th>Status</th><th>Workflow</th><th>Workflow ID</th><th>Run ID</th><th>Started</th><th>Duration</th><th>Failed step</th></tr></thead>
+                  <tbody id="run-list"></tbody>
+                </table>
+              </div>
+              <div class="load-more-row"><button id="load-more-runs" class="button button-secondary" type="button" hidden>Load more</button></div>
+            </section>
+
+
+          </section>
+
+          <section id="view-schedules" class="view-panel" data-panel="triggers" hidden>
+            <div class="page-heading">
+              <div><h1>Triggers</h1><p>Configured triggers and their current status.</p></div>
+              <button id="new-schedule" class="button button-primary" type="button">Add schedule trigger</button>
+            </div>
+
+            <div class="notice notice-neutral">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M9 8h2v7H9V8Zm0-3h2v2H9V5Zm1-4a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm0 2a7 7 0 1 1 0 14 7 7 0 0 1 0-14Z" /></svg>
+              <div><strong>Active means the trigger is enabled. Inactive means it is disabled or its schedule has not been created.</strong> Check provider health separately. Edits take effect after you apply them.</div>
+            </div>
+
+            <section class="surface table-surface">
+              <div class="table-toolbar"><span id="schedule-result-count" class="result-count">—</span></div>
+              <div class="table-scroll">
+                <table>
+                  <thead><tr><th>Trigger</th><th>Workflow</th><th>State</th><th>Kind</th><th>Last occurrence</th><th>Next occurrence</th><th><span class="sr-only">Actions</span></th></tr></thead>
+                  <tbody id="schedule-list"></tbody>
+                </table>
+              </div>
+              <p id="schedule-declared-note" class="surface-footnote" hidden></p>
+            </section>
+
+            <div id="scheduled-starts-surface" class="section-stack scheduled-starts-section">
+              <section class="surface table-surface">
+                <div class="surface-heading"><div><h2>One-off scheduled starts</h2><p>Workflows scheduled to start once at a future time.</p></div><span id="scheduled-start-result-count" class="result-count">—</span></div>
+                <div class="table-scroll">
+                  <table>
+                    <thead><tr><th>Workflow</th><th>Due</th><th>Workload</th><th>State</th><th>Run</th><th><span class="sr-only">Actions</span></th></tr></thead>
+                    <tbody id="scheduled-start-list"></tbody>
+                  </table>
+                </div>
+                <div class="load-more-row"><button id="load-more-scheduled-starts" class="button button-secondary" type="button" hidden>Load more</button></div>
+              </section>
+            </div>
+          </section>
+
+          <section id="view-editor" class="view-panel" data-panel="editor" hidden>
+            <div class="page-heading">
+              <div><h1>Editor</h1><p id="configuration-subtitle">Draft, validate, and publish declaration changes.</p></div>
+              <div class="heading-actions">
+                <button id="editor-open-components" class="button button-secondary" type="button">Components</button>
+                <span id="restart-required" class="revision-chip restart-chip" hidden>Restart required</span>
+              </div>
+            </div>
+
+            <div id="configuration-availability" class="notice notice-warning" hidden>
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2 1 18h18L10 2Zm0 4.1L15.6 16H4.4L10 6.1ZM9 9v3h2V9H9Zm0 4v2h2v-2H9Z" /></svg>
+              <div><strong>Configuration authoring is not enabled on this host.</strong> Enable a managed configuration API or local source authoring to edit declarations.</div>
+            </div>
+
+            <ol id="release-flow" class="release-flow" aria-label="Configuration release sequence">
+              <li><span>1</span><div><strong>Draft</strong><small>Edit workflow configuration</small></div></li>
+              <li><span>2</span><div><strong>Validate</strong><small>Check schema and references</small></div></li>
+              <li><span>3</span><div><strong>Publish</strong><small>Create immutable revision</small></div></li>
+              <li><span>4</span><div><strong>Confirm</strong><small>Review the activation plan</small></div></li>
+              <li><span>5</span><div><strong>Activate</strong><small>Route future starts only</small></div></li>
+              <li><span>6</span><div><strong>Readiness &amp; audit</strong><small>Check the activation result</small></div></li>
+            </ol>
+
+            <section class="surface table-surface">
+              <div class="surface-heading">
+                <div><h2>Draft document</h2><p id="editor-help">Saving a draft does not publish or activate it.</p></div>
+                <button id="editor-add-schedule" class="text-button" type="button">Add schedule</button>
+              </div>
+              <fieldset id="draft-tabs" class="filter-tabs declaration-tabs">
+                <legend class="sr-only">Draft sections</legend>
+                <button class="filter-tab is-active" type="button" data-draft-tab="workflows">Workflows</button>
+                <button class="filter-tab" type="button" data-draft-tab="triggers">Triggers</button>
+                <button class="filter-tab" type="button" data-draft-tab="document">Full document</button>
+              </fieldset>
+              <div data-draft-panel="workflows">
+                <div class="table-scroll"><table><thead><tr><th>Workflow</th><th>Apply state</th><th>Steps</th><th>Triggers</th><th>Description</th><th></th></tr></thead><tbody id="editor-workflow-list"></tbody></table></div>
+              </div>
+              <div data-draft-panel="triggers" hidden>
+                <div class="table-scroll"><table><thead><tr><th>Trigger</th><th>Apply state</th><th>Workflow</th><th>Kind or component</th><th>Desired state</th><th></th></tr></thead><tbody id="editor-schedule-list"></tbody></table></div>
+                <div class="editor-surface schedules-editor">
+                  <div class="surface-heading editor-heading">
+                    <div><h2>Triggers YAML</h2><p>All declared trigger kinds; workflows are edited on their own pages.</p></div>
+                  </div>
+                  <textarea id="schedules-editor" spellcheck="false" aria-label="Triggers YAML"></textarea>
+                  <div class="editor-actions">
+                    <div>
+                      <button id="schedules-reload" class="button button-secondary" type="button">Reload</button>
+                    </div>
+                    <button id="schedules-save" class="button button-primary" type="button">Save triggers</button>
+                  </div>
+                </div>
+              </div>
+              <div class="editor-surface" data-draft-panel="document" hidden>
+                <textarea id="configuration-editor" spellcheck="false" aria-label="Configuration draft"></textarea>
+                <div class="editor-actions">
+                  <div>
+                    <button id="load-draft" class="button button-secondary" type="button">Reload</button>
+                    <button id="save-draft" class="button button-secondary" type="button">Save</button>
+                    <button id="validate-draft" class="button button-secondary" type="button">Validate</button>
+                    <button id="discard-draft" class="button button-secondary" type="button">Discard saved changes</button>
+                  </div>
+                  <button id="apply-draft" class="button button-primary" type="button">Apply changes</button>
+                </div>
+              </div>
+              <div class="draft-feedback">
+                <div id="action-status" class="action-status" role="status"></div>
+                <div id="validation-issues" class="validation-issues" aria-live="polite" hidden></div>
+              </div>
+            </section>
+          </section>
+
+          <section id="view-components" class="view-panel" data-panel="components" hidden>
+            <div class="page-heading">
+              <div>
+                <h1>Components</h1>
+                <p>Components available in your scope. In local mode, this lists services used by loaded workflows. Server credentials and settings are not shown.</p>
+              </div>
+              <button class="button button-secondary" type="button" data-view-link="editor">Back to editor</button>
+            </div>
+            <div class="table-toolbar">
+              <label class="search-field">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8.5 3a5.5 5.5 0 1 0 3.44 9.8L16.15 17 17.5 15.65l-4.2-4.2A5.5 5.5 0 0 0 8.5 3Zm0 2a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7Z" /></svg>
+                <span class="sr-only">Filter components</span>
+                <input id="component-search" type="search" placeholder="Filter components" autocomplete="off" />
+              </label>
+            </div>
+            <div class="overview-grid">
+              <section class="surface table-surface">
+                <div class="surface-heading"><div><h2>Components and services</h2><p>Approved versions, or services used by local workflows.</p></div></div>
+                <div class="table-scroll"><table><thead><tr><th>Component or service</th><th>Contracts</th></tr></thead><tbody id="component-services"></tbody></table></div>
+                <p class="surface-footnote">Managed components come from the approved catalog. Local entries show workflow usage and do not grant permissions.</p>
+              </section>
+              <section class="surface table-surface">
+                <div class="surface-heading"><div><h2>Bindings</h2><p>Resource and trigger bindings available to your configuration, with their supported capabilities.</p></div></div>
+                <div class="table-scroll"><table><thead><tr><th>Binding</th><th>Capabilities</th></tr></thead><tbody id="component-resources"></tbody></table></div>
+                <p id="component-truncation-note" class="surface-footnote" hidden></p>
+              </section>
+            </div>
+          </section>
+
+          <section id="view-workflow-editor" class="view-panel" data-panel="workflow-editor" hidden>
+            <button id="back-to-editor-workflows" class="back-link" type="button">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m12.8 4.6-1.4-1.4L4.6 10l6.8 6.8 1.4-1.4L8.4 11H17V9H8.4l4.4-4.4Z" /></svg>
+              All workflows
+            </button>
+            <div class="page-heading">
+              <div>
+                <span class="section-label">Focused editor</span>
+                <h1 id="fragment-workflow-name">Workflow</h1>
+                <p id="fragment-subtitle">Edit one workflow declaration in the draft.</p>
+              </div>
+              <div class="heading-actions">
+                <button id="fragment-open-full" class="button button-secondary" type="button">Open full document</button>
+                <button id="fragment-retire" class="button button-danger" type="button">Retire workflow</button>
+              </div>
+            </div>
+
+            <div>
+              <section class="surface editor-surface">
+                <div class="surface-heading editor-heading">
+                  <div><h2>Workflow YAML</h2><p id="fragment-help">Saving updates only this workflow.</p></div>
+                </div>
+                <textarea id="fragment-editor" spellcheck="false" aria-label="Workflow draft fragment"></textarea>
+                <div class="editor-actions">
+                  <div>
+                    <button id="fragment-reload" class="button button-secondary" type="button">Reload</button>
+                    <button id="fragment-save" class="button button-secondary" type="button">Save workflow</button>
+                    <button id="fragment-validate" class="button button-secondary" type="button">Validate draft</button>
+                  </div>
+                </div>
+                <div id="fragment-status" class="action-status" role="status"></div>
+                <div id="fragment-validation-issues" class="validation-issues" aria-live="polite" hidden></div>
+              </section>
+              <details class="surface advanced-editor fragment-components">
+                <summary>Components reference — approved services, actions, and resources</summary>
+                <div class="overview-grid fragment-components-grid">
+                  <section>
+                    <span class="section-label">Services</span>
+                    <div class="table-scroll"><table><thead><tr><th>Service</th><th>Actions</th></tr></thead><tbody id="fragment-component-services"></tbody></table></div>
+                  </section>
+                  <section>
+                    <span class="section-label">Resources</span>
+                    <div class="table-scroll"><table><thead><tr><th>Resource</th><th>Capabilities</th></tr></thead><tbody id="fragment-component-resources"></tbody></table></div>
+                  </section>
+                </div>
+              </details>
+              <section class="surface graph-surface">
+                <div class="surface-heading">
+                  <div><h2>Preview</h2><p>Preview of this workflow. Validate the full draft to check its references.</p></div>
+                  <button id="fragment-preview-run" class="text-button" type="button">Refresh preview</button>
+                </div>
+                <div id="fragment-preview-graph" class="workflow-graph"></div>
+                <details class="graph-fallback">
+                  <summary>Graph as text</summary>
+                  <div id="fragment-preview-table"></div>
+                </details>
+                <div id="fragment-preview-issues" class="validation-issues" aria-live="polite" hidden></div>
+              </section>
+            </div>
+          </section>
+
+          <section id="view-releases" class="view-panel" data-panel="releases" hidden>
+            <div class="page-heading">
+              <div><h1>Releases</h1><p>Immutable revisions, comparisons, activations, and rollback.</p></div>
+              <span id="active-revision" class="revision-chip">No active revision</span>
+            </div>
+
+            <div id="release-status" class="action-status" role="status"></div>
+
+            <div class="configuration-grid">
+              <div class="history-grid">
+                <section class="surface table-surface">
+                  <div class="surface-heading"><div><h2>Revision history</h2><p>Immutable configuration snapshots.</p></div></div>
+                  <div class="table-scroll"><table><thead><tr><th>Revision</th><th>Created</th><th>Parent</th></tr></thead><tbody id="revision-list"></tbody></table></div>
+                  <div class="load-more-row"><button id="load-more-revisions" class="button button-secondary" type="button" hidden>Load more</button></div>
+                </section>
+                <section class="surface table-surface">
+                  <div class="surface-heading"><div><h2>Activation history</h2><p>Activation and rollback records.</p></div></div>
+                  <div class="table-scroll"><table><thead><tr><th>Revision</th><th>State</th><th>Updated</th><th><span class="sr-only">Actions</span></th></tr></thead><tbody id="activation-list"></tbody></table></div>
+                  <div class="load-more-row"><button id="load-more-activations" class="button button-secondary" type="button" hidden>Load more</button></div>
+                </section>
+
+                <section id="activation-inspector" class="surface" hidden>
+                  <div class="surface-heading"><div><h2>Activation detail</h2><p id="activation-inspector-note">Status and result of this activation.</p></div></div>
+                  <div id="activation-inspector-fields" class="metadata-stack"></div>
+                </section>
+
+                <section id="revision-inspector" class="surface" hidden>
+                  <div class="surface-heading">
+                    <div><h2>Revision</h2><p id="revision-inspector-note">Saved configuration for this revision.</p></div>
+                  </div>
+                  <pre id="revision-document" class="declaration-view"></pre>
+                </section>
+
+                <section id="compare-result" class="surface" hidden>
+                  <div class="surface-heading"><div><h2>Comparison</h2><p id="compare-note">Changes between the selected revisions, up to the comparison limit.</p></div></div>
+                  <div class="table-scroll"><table><thead><tr><th>Operation</th><th>Path</th></tr></thead><tbody id="diff-items"></tbody></table></div>
+                  <div class="compare-documents">
+                    <div><span class="section-label" id="diff-source-label">From</span><pre id="diff-source-doc" class="declaration-view"></pre></div>
+                    <div><span class="section-label" id="diff-target-label">To</span><pre id="diff-target-doc" class="declaration-view"></pre></div>
+                  </div>
+                </section>
+              </div>
+
+              <aside class="configuration-sidebar">
+                <section class="surface activation-card">
+                  <div class="surface-heading"><div><h2>Activate revision</h2><p>Only future workflow starts change.</p></div></div>
+                  <label class="field-label" for="activation-target">Revision</label>
+                  <select id="activation-target"></select>
+                  <button id="activate-revision" class="button button-primary button-full" type="button">Plan and activate</button>
+                </section>
+                <section class="surface compare-card">
+                  <div class="surface-heading"><div><h2>Compare revisions</h2></div></div>
+                  <label class="field-label" for="diff-source">From</label><select id="diff-source"></select>
+                  <label class="field-label" for="diff-target">To</label><select id="diff-target"></select>
+                  <button id="compare-revisions" class="button button-secondary button-full" type="button">Compare</button>
+                  <div id="diff-result" class="diff-result" aria-live="polite"></div>
+                </section>
+              </aside>
+            </div>
+          </section>
+
+          <section id="view-system" class="view-panel" data-panel="system" hidden>
+            <div class="page-heading">
+              <div><h1>System</h1><p>Component readiness for this runtime process.</p></div>
+              <span id="system-runtime-status" class="status-badge status-unknown">Checking runtime</span>
+            </div>
+
+            <section class="surface">
+              <div class="surface-heading">
+                <div><h2>Runtime health</h2><p>Required components must be ready before the runtime accepts work; optional components are informational.</p></div>
+              </div>
+              <div id="health-components" class="health-list"></div>
+            </section>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <aside id="run-inspector" class="inspector" aria-labelledby="run-inspector-title" hidden>
+              <div class="inspector-header">
+                <div><span class="section-label">Execution details</span><h2 id="run-inspector-title">Run</h2></div>
+                <div class="inspector-controls">
+                  <label class="watch-toggle"><input id="watch-run-toggle" type="checkbox" /> Watch</label>
+          <button id="refresh-run-detail" class="text-button" type="button">Refresh</button>
+                </div>
+        <button id="close-run-inspector" class="icon-button" type="button" aria-label="Close run details">
+                  <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5.7 4.3 4.3 4.3 4.3-4.3 1.4 1.4-4.3 4.3 4.3 4.3-1.4 1.4-4.3-4.3-4.3 4.3-1.4-1.4L8.6 10 4.3 5.7l1.4-1.4Z" /></svg>
+                </button>
+              </div>
+              <div id="run-detail" class="inspector-body" aria-live="polite"></div>
+            </aside>
+    <button id="inspector-scrim" class="inspector-scrim" type="button" aria-label="Close run details" hidden></button>
+
+    <dialog id="workflow-dialog" class="authoring-dialog" aria-labelledby="workflow-dialog-title">
+      <form id="workflow-form" method="dialog">
+        <div class="dialog-heading"><div><span class="section-label">Configuration</span><h2 id="workflow-dialog-title">Add workflow</h2><p>Create an empty workflow, then add steps in the YAML editor.</p></div><button class="icon-button" type="button" data-close-dialog="workflow-dialog" aria-label="Close"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5.7 4.3 4.3 4.3 4.3-4.3 1.4 1.4-4.3 4.3 4.3 4.3-1.4 1.4-4.3-4.3-4.3 4.3-1.4-1.4L8.6 10 4.3 5.7l1.4-1.4Z" /></svg></button></div>
+        <label class="field-label" for="workflow-name">Workflow name</label>
+        <input id="workflow-name" name="workflow-name" required maxlength="128" pattern="[A-Za-z][A-Za-z0-9_-]*" autocomplete="off" />
+        <label class="field-label" for="workflow-description">Description</label>
+        <textarea id="workflow-description" name="workflow-description" maxlength="2048" rows="3"></textarea>
+        <div class="dialog-actions"><button class="button button-secondary" type="button" data-close-dialog="workflow-dialog">Cancel</button><button class="button button-primary" type="submit">Save</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="start-run-dialog" class="authoring-dialog" aria-labelledby="start-run-dialog-title">
+      <form id="start-run-form" method="dialog">
+        <div class="dialog-heading"><div><span class="section-label">Control API</span><h2 id="start-run-dialog-title">Start run</h2><p id="start-run-context">Uses the active workflow definition for your current scope.</p></div><button class="icon-button" type="button" data-close-dialog="start-run-dialog" aria-label="Close"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5.7 4.3 4.3 4.3 4.3-4.3 1.4 1.4-4.3 4.3 4.3 4.3-1.4 1.4-4.3-4.3-4.3 4.3-1.4-1.4L8.6 10 4.3 5.7l1.4-1.4Z" /></svg></button></div>
+        <label class="field-label" for="start-run-input">Workflow input (JSON object)</label>
+        <textarea id="start-run-input" spellcheck="false" rows="7">{}</textarea>
+        <p id="start-run-contract" class="run-control-note"></p>
+        <div class="form-grid">
+          <label><span class="field-label">Timing</span><select id="start-run-mode"><option id="start-run-now-option" value="now">Start now</option><option id="start-run-later-option" value="later">Schedule for later</option></select></label>
+          <label id="start-run-schedule-fields" hidden><span class="field-label">Due time</span><input id="start-run-at" type="datetime-local" /></label>
+          <label id="start-run-workload-field" hidden><span class="field-label">Workload</span><select id="start-run-workload"><option value="interactive">Interactive</option><option value="standard" selected>Standard</option><option value="batch">Batch</option></select></label>
+        </div>
+        <div class="dialog-actions"><button class="button button-secondary" type="button" data-close-dialog="start-run-dialog">Cancel</button><button id="start-run-submit" class="button button-primary" type="submit">Start run</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="schedule-dialog" class="authoring-dialog" aria-labelledby="schedule-dialog-title">
+      <form id="schedule-form" method="dialog">
+        <div class="dialog-heading"><div><span class="section-label">Configuration</span><h2 id="schedule-dialog-title">Add schedule</h2><p>Save this schedule to the draft, then apply your changes.</p></div><button class="icon-button" type="button" data-close-dialog="schedule-dialog" aria-label="Close"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5.7 4.3 4.3 4.3 4.3-4.3 1.4 1.4-4.3 4.3 4.3 4.3-1.4 1.4-4.3-4.3-4.3 4.3-1.4-1.4L8.6 10 4.3 5.7l1.4-1.4Z" /></svg></button></div>
+        <div class="form-grid">
+          <label><span class="field-label">Schedule name</span><input id="schedule-name" required maxlength="128" pattern="[A-Za-z][A-Za-z0-9_-]*" autocomplete="off" /></label>
+          <label><span class="field-label">Workflow</span><select id="schedule-workflow" required></select></label>
+          <label><span class="field-label">Schedule type</span><select id="schedule-kind"><option value="interval">Interval</option><option value="cron">Cron</option></select></label>
+          <label id="schedule-interval-field"><span class="field-label">Every seconds</span><input id="schedule-interval" type="number" min="1" max="31536000" value="3600" required /></label>
+          <label id="schedule-cron-field" hidden><span class="field-label">Cron expression</span><input id="schedule-cron" value="0 9 * * 1" /></label>
+          <label><span class="field-label">Timezone</span><input id="schedule-timezone" value="UTC" maxlength="128" /></label>
+        </div>
+        <label class="field-label" for="schedule-input">Workflow input (JSON object)</label>
+        <textarea id="schedule-input" spellcheck="false" rows="5">{}</textarea>
+        <div class="dialog-actions"><button class="button button-secondary" type="button" data-close-dialog="schedule-dialog">Cancel</button><button class="button button-primary" type="submit">Save</button></div>
+      </form>
+    </dialog>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

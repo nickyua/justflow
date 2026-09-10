@@ -1,0 +1,68 @@
+# Demo: fan-out smoke-test workflow, fully runnable from the repository root with
+#   make demo
+# Trigger globals: n (how many numbers), seed (for reproducible runs;
+# pass null for real randomness).
+
+workflow: prime_stats
+description: >
+  Generate N random numbers, check each for primality in parallel, and
+  summarize prime/non-prime counts.
+
+on_complete:
+  resource: audit_store
+  path: audit/prime_stats/${request_id}.json
+  retention_policy: local-demo
+
+result: summarize.summary
+
+params:
+  n: "${n}"
+  seed: "${seed}"
+
+steps:
+  generate:
+    target:
+      kind: service
+      service: numbers
+      action: generate_numbers
+
+  check_prime:
+    target:
+      kind: service
+      service: prime_checker
+      action: check_prime
+
+  summarize:
+    target:
+      kind: service
+      service: prime_summarizer
+      action: summarize_primes
+
+flow:
+  - name: generate
+    op: generate
+    params:
+      n: "${n}"
+      seed: "${seed}"
+    output: batch
+    then: fan_out
+
+  - name: fan_out
+    op: check_prime
+    input: generate.batch
+    for_each: input.numbers
+    as: number
+    parallel: true
+    max_concurrency: 8
+    on_iteration_fail: collect
+    output: checks
+    then: summarize
+
+  - name: summarize
+    op: summarize
+    input: fan_out.checks
+    output: summary
+    then: done
+
+  - name: done
+    terminal: true

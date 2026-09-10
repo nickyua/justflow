@@ -1,0 +1,16 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Synthetic scanner fixture only"
+paths = ['''^tests/fixtures/security/synthetic-aws-access-key\.txt$''']
+
+[[rules]]
+id = "private-key"
+
+[[rules.allowlists]]
+description = "Literal PEM headers used to validate Temporal TLS input"
+condition = "AND"
+paths = ['''^src/justflow/runtime/temporal\.py$''']
+regexTarget = "match"
+regexes = ['''\A-----BEGIN PRIVATE KEY-----",\s*b"-----BEGIN RSA PRIVATE KEY-----",\s*b"-----BEGIN EC PRIVATE KEY-----\z''']

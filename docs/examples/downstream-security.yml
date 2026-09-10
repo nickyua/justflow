@@ -1,0 +1,50 @@
+name: Application security
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+env:
+  APPLICATION_IMAGE: example-application:ci
+  GITLEAKS_IMAGE: ghcr.io/gitleaks/gitleaks:v8.28.0@sha256:cdbb7c955abce02001a9f6c9f602fb195b7fadc1e812065883f695d1eeaba854
+  TRIVY_IMAGE: aquasec/trivy:0.72.0@sha256:cffe3f5161a47a6823fbd23d985795b3ed72a4c806da4c4df16266c02accdd6f
+
+jobs:
+  application-security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out complete history
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+      - name: Configure Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.14"
+      - name: Audit resolved dependencies
+        run: python -m pip_audit --strict --requirement requirements.lock.txt
+      - name: Validate application configuration
+        run: justflow validate --config-dir configs --format json
+      - name: Scan repository history for secrets
+        run: >-
+          docker run --rm --read-only --tmpfs /tmp:size=16m
+          --volume "$PWD:/repo:ro" "$GITLEAKS_IMAGE" git /repo
+          --no-banner --redact --exit-code 1
+      - name: Build final application image
+        run: docker build --tag "$APPLICATION_IMAGE" .
+      - name: Scan the final application image
+        run: >-
+          docker run --rm --volume /var/run/docker.sock:/var/run/docker.sock:ro
+          "$TRIVY_IMAGE" image --no-progress --exit-code 1
+          --severity HIGH,CRITICAL --scanners vuln,secret,misconfig
+          --ignore-unfixed "$APPLICATION_IMAGE"
+      - name: Generate final image SBOM
+        run: >-
+          docker run --rm --volume /var/run/docker.sock:/var/run/docker.sock:ro
+          --volume "$PWD:/artifacts" "$TRIVY_IMAGE" image --no-progress
+          --format spdx-json --output /artifacts/application.spdx.json
+          "$APPLICATION_IMAGE"

@@ -1,0 +1,8 @@
+resources:
+  customer_directory:
+    provider: static
+    config:
+      values:
+        customers:
+          - customer_ref: customer_alpha
+          - customer_ref: customer_beta

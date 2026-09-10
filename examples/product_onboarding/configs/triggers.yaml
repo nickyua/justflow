@@ -1,0 +1,4 @@
+triggers:
+  product_onboarding_api:
+    kind: api
+    workflow: product_onboarding

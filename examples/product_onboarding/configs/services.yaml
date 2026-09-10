@@ -1,0 +1,7 @@
+services:
+  onboarding:
+    transport: direct
+    transport_config:
+      class: product_onboarding.actions.LocalOnboardingService
+    dispatch_timeout_sec: 10
+    retries: 0

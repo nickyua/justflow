@@ -1,0 +1,184 @@
+{
+  "version": "0.1.0",
+  "flows": [
+    {
+      "from": "internet",
+      "to": "alb",
+      "protocol": "tcp",
+      "port": 443,
+      "purpose": "authenticated HTTPS ingress"
+    },
+    {
+      "from": "alb",
+      "to": "gateway",
+      "protocol": "tcp",
+      "port": 8080,
+      "purpose": "Justflow API and health target"
+    },
+    {
+      "from": "gateway",
+      "to": "temporal-frontend",
+      "protocol": "tcp",
+      "port": 7233,
+      "purpose": "private self-hosted Temporal frontend over verified TLS and namespace authorization"
+    },
+    {
+      "from": "worker",
+      "to": "temporal-frontend",
+      "protocol": "tcp",
+      "port": 7233,
+      "purpose": "private self-hosted Temporal frontend over verified TLS and namespace authorization"
+    },
+    {
+      "from": "gateway",
+      "to": "aws-gateway-endpoints",
+      "protocol": "tcp",
+      "port": 443,
+      "purpose": "S3 and DynamoDB through private route-table endpoints"
+    },
+    {
+      "from": "worker",
+      "to": "aws-gateway-endpoints",
+      "protocol": "tcp",
+      "port": 443,
+      "purpose": "S3 and DynamoDB through private route-table endpoints"
+    },
+    {
+      "from": "gateway",
+      "to": "aws-interface-endpoints",
+      "protocol": "tcp",
+      "port": 443,
+      "purpose": "SQS, Secrets Manager, KMS, ECR, and logs"
+    },
+    {
+      "from": "worker",
+      "to": "aws-interface-endpoints",
+      "protocol": "tcp",
+      "port": 443,
+      "purpose": "SQS, Secrets Manager, SSM, KMS, ECR, and logs"
+    },
+    {
+      "from": "worker",
+      "to": "redis",
+      "protocol": "tcp",
+      "port": 6379,
+      "purpose": "TLS application cache and key-value access"
+    },
+    {
+      "from": "worker",
+      "to": "postgres",
+      "protocol": "tcp",
+      "port": 5432,
+      "purpose": "TLS application database access"
+    },
+    {
+      "from": "migration",
+      "to": "postgres",
+      "protocol": "tcp",
+      "port": 5432,
+      "purpose": "one-shot schema migration"
+    },
+    {
+      "from": "temporal",
+      "to": "temporal-postgres",
+      "protocol": "tcp",
+      "port": 5432,
+      "purpose": "separate durable persistence and visibility databases with TLS verification"
+    },
+    {
+      "from": "temporal-schema",
+      "to": "temporal-postgres",
+      "protocol": "tcp",
+      "port": 5432,
+      "purpose": "one-shot schema administration with a separate credential"
+    },
+    {
+      "from": "temporal",
+      "to": "temporal",
+      "protocol": "tcp",
+      "port": "7233-7236,7239",
+      "purpose": "private service RPC; internal frontend is server-only and uses mTLS"
+    },
+    {
+      "from": "temporal",
+      "to": "temporal",
+      "protocol": "tcp",
+      "port": "6933-6936,6939",
+      "purpose": "membership between private Temporal task ENIs; expand to individual SG rules"
+    },
+    {
+      "from": "temporal",
+      "to": "temporal-jwks",
+      "protocol": "tcp",
+      "port": 443,
+      "purpose": "trusted dedicated JWT signing-key discovery over TLS"
+    }
+  ],
+  "forbidden_flows": [
+    {
+      "from": "internet",
+      "to": "worker",
+      "port": "any"
+    },
+    {
+      "from": "internet",
+      "to": "temporal",
+      "port": "any"
+    },
+    {
+      "from": "alb",
+      "to": "worker",
+      "port": "any"
+    },
+    {
+      "from": "internet",
+      "to": "redis",
+      "port": "any"
+    },
+    {
+      "from": "internet",
+      "to": "postgres",
+      "port": "any"
+    },
+    {
+      "from": "gateway",
+      "to": "redis",
+      "port": "any"
+    },
+    {
+      "from": "gateway",
+      "to": "postgres",
+      "port": "any"
+    },
+    {
+      "from": "internet",
+      "to": "temporal-internal-frontend",
+      "port": "any"
+    },
+    {
+      "from": "internet",
+      "to": "temporal-postgres",
+      "port": "any"
+    },
+    {
+      "from": "gateway",
+      "to": "temporal-internal-frontend",
+      "port": "any"
+    },
+    {
+      "from": "gateway",
+      "to": "temporal-postgres",
+      "port": "any"
+    },
+    {
+      "from": "worker",
+      "to": "temporal-internal-frontend",
+      "port": "any"
+    },
+    {
+      "from": "worker",
+      "to": "temporal-postgres",
+      "port": "any"
+    }
+  ]
+}

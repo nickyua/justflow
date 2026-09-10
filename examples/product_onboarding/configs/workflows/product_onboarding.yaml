@@ -1,0 +1,90 @@
+workflow: product_onboarding
+description: Validate, approve, provision, and finalize a synthetic customer workspace.
+
+input_schema: product_onboarding.contracts.OnboardingRequest
+
+params:
+  customer_ref: "${customer_ref}"
+  plan: "${plan}"
+  simulate_provisioning_failure: "${simulate_provisioning_failure}"
+
+on_complete:
+  resource: audit_store
+  path: audit/product-onboarding/${request_id}.json
+  retention_policy: local-demo
+
+steps:
+  validate_request:
+    target:
+      kind: service
+      service: onboarding
+      action: validate_request
+    output_schema: product_onboarding.contracts.OnboardingRequest
+
+  provision_workspace:
+    target:
+      kind: workflow
+      workflow: provision_workspace
+    params:
+      customer_ref: "${customer_ref}"
+      plan: "${plan}"
+      simulate_provisioning_failure: "${simulate_provisioning_failure}"
+
+  finalize_onboarding:
+    target:
+      kind: service
+      service: onboarding
+      action: finalize_onboarding
+
+  record_compensation:
+    target:
+      kind: service
+      service: onboarding
+      action: record_compensation
+
+flow:
+  - name: validate
+    op: validate_request
+    input:
+      customer_ref: customer_ref
+      plan: plan
+      simulate_provisioning_failure: simulate_provisioning_failure
+    output: request
+    then: await_approval
+
+  - name: await_approval
+    wait_for:
+      signal: onboarding_approved
+      timeout_sec: 300
+      on_timeout: approval_expired
+    output: approval
+    then: provision
+
+  - name: provision
+    op: provision_workspace
+    output: workspace
+    on_failure: compensate
+    then: finalize
+
+  - name: finalize
+    op: finalize_onboarding
+    input: provision.workspace
+    output: onboarding_result
+    then: completed
+
+  - name: compensate
+    op: record_compensation
+    input: validate.request
+    output: compensation
+    then: provisioning_failed
+
+  - name: approval_expired
+    terminal: true
+    reason: approval_expired
+
+  - name: provisioning_failed
+    terminal: true
+    reason: provisioning_failed
+
+  - name: completed
+    terminal: true

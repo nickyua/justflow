@@ -1,0 +1,4 @@
+triggers:
+  hello_api:
+    kind: api
+    workflow: hello

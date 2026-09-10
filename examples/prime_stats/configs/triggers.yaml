@@ -1,0 +1,4 @@
+triggers:
+  prime_stats_api:
+    kind: api
+    workflow: prime_stats

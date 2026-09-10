@@ -1,0 +1,52 @@
+workflow: object_ingestion
+description: Validate and archive one mapped synthetic S3 object-created event.
+
+input_schema: justflow.runtime.S3ObjectCreatedWorkflowEvent
+output_schema: object_ingestion.contracts.ObjectResult
+result: archive.result
+
+params:
+  bucket: "${bucket}"
+  key: "${key}"
+  sequencer: "${sequencer}"
+  size: "${size}"
+
+on_complete:
+  resource: audit_store
+  path: audit/object-ingestion/${request_id}.json
+  retention_policy: local-demo
+
+steps:
+  inspect_object:
+    target:
+      kind: service
+      service: object_service
+      action: inspect_object
+    output_schema: object_ingestion.contracts.ObjectReference
+
+  archive_object:
+    target:
+      kind: service
+      service: object_service
+      action: archive_object
+    output_schema: object_ingestion.contracts.ObjectResult
+
+flow:
+  - name: inspect
+    op: inspect_object
+    input:
+      bucket: bucket
+      key: key
+      sequencer: sequencer
+      size: size
+    output: object
+    then: archive
+
+  - name: archive
+    op: archive_object
+    input: inspect.object
+    output: result
+    then: done
+
+  - name: done
+    terminal: true

@@ -1,0 +1,21 @@
+services:
+  numbers:
+    transport: direct
+    transport_config:
+      class: prime_stats.actions.generate_numbers.GenerateNumbers
+    dispatch_timeout_sec: 10
+    retries: 0
+
+  prime_checker:
+    transport: direct
+    transport_config:
+      class: prime_stats.actions.check_prime.CheckPrime
+    dispatch_timeout_sec: 10
+    retries: 0
+
+  prime_summarizer:
+    transport: direct
+    transport_config:
+      class: prime_stats.actions.summarize_primes.SummarizePrimes
+    dispatch_timeout_sec: 10
+    retries: 0

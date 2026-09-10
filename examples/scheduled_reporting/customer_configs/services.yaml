@@ -1,0 +1,7 @@
+services:
+  customers:
+    transport: direct
+    transport_config:
+      class: scheduled_reporting.customers.LocalCustomerService
+    dispatch_timeout_sec: 10
+    retries: 0

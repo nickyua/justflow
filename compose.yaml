@@ -1,0 +1,107 @@
+name: justflow-local
+
+x-runtime-environment: &runtime-environment
+  JUSTFLOW_RUNTIME__PROFILE: local
+  JUSTFLOW_TEMPORAL__ADDRESS: temporal:7233
+  JUSTFLOW_TEMPORAL__CONNECTION: '{"mode":"local_plaintext","host":"temporal"}'
+  JUSTFLOW_DEPLOYMENT__NAME: justflow-local
+  JUSTFLOW_DEPLOYMENT__BUILD_ID: compose
+  JUSTFLOW_DEPLOYMENT__ARTIFACT_DIGEST: local-development
+  JUSTFLOW_DEPLOYMENT__PACKAGE_VERSION: 0.1.0
+  JUSTFLOW_CONFIGURATION__BACKEND: sqlite
+  JUSTFLOW_CONFIGURATION__PATH: /var/lib/justflow/configuration.sqlite3
+  JUSTFLOW_PATHS__CONFIG_DIR: /opt/justflow/config
+  JUSTFLOW_PATHS__CATALOG_DIR: /var/lib/justflow
+  JUSTFLOW_CONTROL__HOST: 0.0.0.0
+  JUSTFLOW_CONTROL__PORT: 8080
+  JUSTFLOW_CONTROL__SHUTDOWN_GRACE_SECONDS: 30
+
+x-runtime-service: &runtime-service
+  image: justflow-host-application:local
+  read_only: true
+  init: true
+  environment: *runtime-environment
+  volumes:
+    - justflow-state:/var/lib/justflow
+  tmpfs:
+    - /tmp:size=64m,mode=1777
+  depends_on:
+    temporal:
+      condition: service_healthy
+    configuration-init:
+      condition: service_completed_successfully
+    catalog-init:
+      condition: service_completed_successfully
+  restart: unless-stopped
+  stop_grace_period: 35s
+
+services:
+  temporal:
+    image: temporalio/temporal:1.5.1@sha256:597a5dbbcc6e7716b326dde4a51622d5ea0879eb0cf06ff8a94381361d0a987d
+    command: ["server", "start-dev", "--ip", "0.0.0.0", "--ui-port", "8233"]
+    ports:
+      - "127.0.0.1:7233:7233"
+      - "127.0.0.1:8233:8233"
+    healthcheck:
+      test: ["CMD", "temporal", "operator", "cluster", "health", "--address", "127.0.0.1:7233"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    stop_grace_period: 20s
+
+  configuration-init:
+    image: justflow-host-application:local
+    environment: *runtime-environment
+    entrypoint: ["host-application-config", "initialize"]
+    command:
+      - "--source-dir"
+      - "/opt/justflow/config"
+      - "--database"
+      - "/var/lib/justflow/configuration.sqlite3"
+    read_only: true
+    volumes:
+      - justflow-state:/var/lib/justflow
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    restart: "no"
+
+  catalog-init:
+    image: justflow-host-application:local
+    entrypoint: ["host-application-config", "publish-definitions"]
+    command: ["--source-dir", "/opt/justflow/config"]
+    read_only: true
+    environment: *runtime-environment
+    volumes:
+      - justflow-state:/var/lib/justflow
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    restart: "no"
+
+  worker:
+    <<: *runtime-service
+    command:
+      - "host_application.worker:create_worker_application"
+      - "--factory"
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8080"
+
+  api:
+    <<: *runtime-service
+    entrypoint: ["uvicorn"]
+    command:
+      - "host_application.gateway:create_gateway_application"
+      - "--factory"
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8080"
+      - "--timeout-graceful-shutdown"
+      - "30"
+    ports:
+      - "127.0.0.1:8080:8080"
+
+volumes:
+  justflow-state:

@@ -1,0 +1,25 @@
+{
+  "version": "0",
+  "id": "fixture-delivery-1",
+  "detail-type": "Object Created",
+  "source": "aws.s3",
+  "account": "000000000000",
+  "time": "2026-08-10T09:00:00Z",
+  "region": "eu-central-1",
+  "resources": ["arn:aws:s3:::example-ingestion"],
+  "detail": {
+    "version": "0",
+    "bucket": {"name": "example-ingestion"},
+    "object": {
+      "key": "incoming/order-100.json",
+      "size": 128,
+      "etag": "fixture-etag",
+      "version-id": "fixture-version",
+      "sequencer": "00655AED6DCD90281E"
+    },
+    "request-id": "fixture-request",
+    "requester": "000000000000",
+    "source-ip-address": "192.0.2.1",
+    "reason": "PutObject"
+  }
+}

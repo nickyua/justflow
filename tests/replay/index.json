@@ -1,0 +1,225 @@
+{
+  "fixtures": [
+    {
+      "behavior_family": "terminal",
+      "definition_digest": "d63d302d120691215387c6ccfd16fc6e582042232fcc149a2a90979dcae242ae",
+      "history": "tests/replay/histories/terminal.json",
+      "id": "terminal",
+      "worker_build_id": "baseline-1",
+      "worker_deployment": "justflow-replay",
+      "workflow_id": "replay-fixture-terminal",
+      "workflow_type": "replay_terminal__d63d302d120691215387c6ccfd16fc6e582042232fcc149a2a90979dcae242ae"
+    },
+    {
+      "behavior_family": "activity",
+      "definition_digest": "7a0b2a161e59169d82b55b7be48cb98eb8d1daeb17df96ba62dda890fbb4dabb",
+      "history": "tests/replay/histories/activity.json",
+      "id": "activity",
+      "worker_build_id": "baseline-1",
+      "worker_deployment": "justflow-replay",
+      "workflow_id": "replay-fixture-activity",
+      "workflow_type": "replay_activity__7a0b2a161e59169d82b55b7be48cb98eb8d1daeb17df96ba62dda890fbb4dabb"
+    },
+    {
+      "behavior_family": "branching",
+      "definition_digest": "0f48a29195e9583cec6beda3f4fb6a1c383259d41e8ee2eacfe690e705e949ee",
+      "history": "tests/replay/histories/branching.json",
+      "id": "branching",
+      "worker_build_id": "baseline-1",
+      "worker_deployment": "justflow-replay",
+      "workflow_id": "replay-fixture-branching",
+      "workflow_type": "replay_branching__0f48a29195e9583cec6beda3f4fb6a1c383259d41e8ee2eacfe690e705e949ee"
+    },
+    {
+      "behavior_family": "parallel-fanout",
+      "definition_digest": "f79c01936b9f604cf07ac7ea68e472b6ed3fc377b9b42ff46846b6dc4a5263d5",
+      "history": "tests/replay/histories/parallel-fanout.json",
+      "id": "parallel-fanout",
+      "worker_build_id": "baseline-1",
+      "worker_deployment": "justflow-replay",
+      "workflow_id": "replay-fixture-parallel-fanout",
+      "workflow_type": "replay_parallel_fanout__f79c01936b9f604cf07ac7ea68e472b6ed3fc377b9b42ff46846b6dc4a5263d5"
+    },
+    {
+      "behavior_family": "until-loop",
+      "definition_digest": "7f7b142ca3d9d531b70f5aab6ef8bc66664922a94b293e67dac94c377730e821",
+      "history": "tests/replay/histories/until-loop.json",
+      "id": "until-loop",
+      "worker_build_id": "baseline-1",
+      "worker_deployment": "justflow-replay",
+      "workflow_id": "replay-fixture-until-loop",
+      "workflow_type": "replay_until_loop__7f7b142ca3d9d531b70f5aab6ef8bc66664922a94b293e67dac94c377730e821"
+    },
+    {
+      "behavior_family": "durable-wait",
+      "definition_digest": "855945e06b7b9bd1f18c6fe7ef6f5442df58f3104a1054a6cadd4be17d17565b",
+      "history": "tests/replay/histories/durable-wait.json",
+      "id": "durable-wait",
+      "worker_build_id": "baseline-1",
+      "worker_deployment": "justflow-replay",
+      "workflow_id": "replay-fixture-durable-wait",
+      "workflow_type": "replay_durable_wait__855945e06b7b9bd1f18c6fe7ef6f5442df58f3104a1054a6cadd4be17d17565b"
+    },
+    {
+      "behavior_family": "durable-sleep",
+      "definition_digest": "34e668bbee69619660a6dc95d70b53e1a55964e358a927d34599b05c3be929b4",
+      "history": "tests/replay/histories/durable-sleep.json",
+      "id": "durable-sleep",
+      "worker_build_id": "baseline-1",
+      "worker_deployment": "justflow-replay",
+      "workflow_id": "replay-fixture-durable-sleep",
+      "workflow_type": "replay_durable_sleep__34e668bbee69619660a6dc95d70b53e1a55964e358a927d34599b05c3be929b4"
+    },
+    {
+      "behavior_family": "failure-handler",
+      "definition_digest": "3aa801cf5b5761fcc098e3af2b4a7002923f52e639abadba63756754eee51b8a",
+      "history": "tests/replay/histories/failure-handler.json",
+      "id": "failure-handler",
+      "worker_build_id": "baseline-1",
+      "worker_deployment": "justflow-replay",
+      "workflow_id": "replay-fixture-failure-handler",
+      "workflow_type": "replay_failure_handler__3aa801cf5b5761fcc098e3af2b4a7002923f52e639abadba63756754eee51b8a"
+    },
+    {
+      "behavior_family": "child-workflow",
+      "definition_digest": "a3d0457adde0d383813d23d714f86091b036e44d5cbc1e661682b0a33c86b964",
+      "history": "tests/replay/histories/child-workflow.json",
+      "id": "child-workflow",
+      "worker_build_id": "baseline-1",
+      "worker_deployment": "justflow-replay",
+      "workflow_id": "replay-fixture-child-workflow",
+      "workflow_type": "replay_child_workflow__a3d0457adde0d383813d23d714f86091b036e44d5cbc1e661682b0a33c86b964"
+    },
+    {
+      "behavior_family": "schedule-dispatch",
+      "definition_digest": "bfe805c6bf512881db40c9023b852ca25faa8d47c9d9a25a4d613fd96322f879",
+      "history": "tests/replay/histories/schedule-dispatch.json",
+      "id": "schedule-dispatch",
+      "worker_build_id": "baseline-1",
+      "worker_deployment": "justflow-replay",
+      "workflow_id": "replay-fixture-schedule-dispatch",
+      "workflow_type": "justflow.schedule-dispatch.v1"
+    },
+    {
+      "behavior_family": "scheduled-start-due",
+      "definition_digest": "bfe805c6bf512881db40c9023b852ca25faa8d47c9d9a25a4d613fd96322f879",
+      "history": "tests/replay/histories/scheduled-start-due.json",
+      "id": "scheduled-start-due",
+      "worker_build_id": "baseline-1",
+      "worker_deployment": "justflow-replay",
+      "workflow_id": "replay-fixture-scheduled-start-due",
+      "workflow_type": "justflow.scheduled-start-due.v1"
+    },
+    {
+      "behavior_family": "scheduled-start-arbiter-initial",
+      "definition_digest": "bfe805c6bf512881db40c9023b852ca25faa8d47c9d9a25a4d613fd96322f879",
+      "history": "tests/replay/histories/scheduled-start-arbiter-initial.json",
+      "id": "scheduled-start-arbiter-initial",
+      "worker_build_id": "baseline-1",
+      "worker_deployment": "justflow-replay",
+      "workflow_id": "replay-fixture-scheduled-start-arbiter-initial",
+      "workflow_type": "justflow.scheduled-start-arbiter.v1"
+    },
+    {
+      "behavior_family": "scheduled-start-arbiter-resolved",
+      "definition_digest": "bfe805c6bf512881db40c9023b852ca25faa8d47c9d9a25a4d613fd96322f879",
+      "history": "tests/replay/histories/scheduled-start-arbiter-resolved.json",
+      "id": "scheduled-start-arbiter-resolved",
+      "worker_build_id": "baseline-1",
+      "worker_deployment": "justflow-replay",
+      "workflow_id": "replay-fixture-scheduled-start-arbiter-resolved",
+      "workflow_type": "justflow.scheduled-start-arbiter.v1"
+    },
+    {
+      "behavior_family": "scheduled-start-arbiter-terminal",
+      "definition_digest": "bfe805c6bf512881db40c9023b852ca25faa8d47c9d9a25a4d613fd96322f879",
+      "history": "tests/replay/histories/scheduled-start-arbiter-terminal.json",
+      "id": "scheduled-start-arbiter-terminal",
+      "worker_build_id": "baseline-1",
+      "worker_deployment": "justflow-replay",
+      "workflow_id": "replay-fixture-scheduled-start-arbiter-terminal",
+      "workflow_type": "justflow.scheduled-start-arbiter.v1"
+    },
+    {
+      "behavior_family": "contract-validation-baseline",
+      "definition_digest": "23d4e3f238f114a5ca0b4dfff075964c47052a8533ed0bdbf1fdfeeafcf256f1",
+      "history": "tests/replay/histories/contract-validation-baseline.json",
+      "id": "contract-validation-baseline",
+      "worker_build_id": "baseline-1",
+      "worker_deployment": "justflow-replay",
+      "workflow_id": "replay-contract-validation-baseline",
+      "workflow_type": "baseline_contract__23d4e3f238f114a5ca0b4dfff075964c47052a8533ed0bdbf1fdfeeafcf256f1"
+    },
+    {
+      "behavior_family": "contract-validation-baseline",
+      "definition_digest": "23d4e3f238f114a5ca0b4dfff075964c47052a8533ed0bdbf1fdfeeafcf256f1",
+      "history": "tests/replay/histories/contract-validation-baseline-run-1.json",
+      "id": "contract-validation-baseline-run-1",
+      "worker_build_id": "baseline-1",
+      "worker_deployment": "justflow-replay",
+      "workflow_id": "replay-contract-validation-baseline",
+      "workflow_type": "baseline_contract__23d4e3f238f114a5ca0b4dfff075964c47052a8533ed0bdbf1fdfeeafcf256f1"
+    },
+    {
+      "behavior_family": "archival-baseline",
+      "definition_digest": "c5b4f8752101405871f3166904136a206ba0b78e6edb9d3aa2c57f3f4993ed26",
+      "history": "tests/replay/histories/archival-baseline.json",
+      "id": "archival-baseline",
+      "worker_build_id": "baseline-1",
+      "worker_deployment": "justflow-replay",
+      "workflow_id": "replay-archival-baseline",
+      "workflow_type": "baseline_archive__c5b4f8752101405871f3166904136a206ba0b78e6edb9d3aa2c57f3f4993ed26"
+    },
+    {
+      "behavior_family": "continuation-baseline",
+      "definition_digest": "a0332ba7037ffbbad6ac4155cd2da233709be7d32cb264f994ada93c2cfbf7f7",
+      "history": "tests/replay/histories/continuation-baseline.json",
+      "id": "continuation-baseline",
+      "worker_build_id": "baseline-1",
+      "worker_deployment": "justflow-replay",
+      "workflow_id": "replay-continuation-baseline",
+      "workflow_type": "baseline_continuation__a0332ba7037ffbbad6ac4155cd2da233709be7d32cb264f994ada93c2cfbf7f7"
+    },
+    {
+      "behavior_family": "continuation-restored-baseline",
+      "definition_digest": "a0332ba7037ffbbad6ac4155cd2da233709be7d32cb264f994ada93c2cfbf7f7",
+      "history": "tests/replay/histories/continuation-baseline-run-1.json",
+      "id": "continuation-baseline-run-1",
+      "worker_build_id": "baseline-1",
+      "worker_deployment": "justflow-replay",
+      "workflow_id": "replay-continuation-baseline",
+      "workflow_type": "baseline_continuation__a0332ba7037ffbbad6ac4155cd2da233709be7d32cb264f994ada93c2cfbf7f7"
+    },
+    {
+      "behavior_family": "continuation-restored-baseline",
+      "definition_digest": "a0332ba7037ffbbad6ac4155cd2da233709be7d32cb264f994ada93c2cfbf7f7",
+      "history": "tests/replay/histories/continuation-baseline-run-2.json",
+      "id": "continuation-baseline-run-2",
+      "worker_build_id": "baseline-1",
+      "worker_deployment": "justflow-replay",
+      "workflow_id": "replay-continuation-baseline",
+      "workflow_type": "baseline_continuation__a0332ba7037ffbbad6ac4155cd2da233709be7d32cb264f994ada93c2cfbf7f7"
+    },
+    {
+      "behavior_family": "continuation-restored-baseline",
+      "definition_digest": "a0332ba7037ffbbad6ac4155cd2da233709be7d32cb264f994ada93c2cfbf7f7",
+      "history": "tests/replay/histories/continuation-baseline-run-3.json",
+      "id": "continuation-baseline-run-3",
+      "worker_build_id": "baseline-1",
+      "worker_deployment": "justflow-replay",
+      "workflow_id": "replay-continuation-baseline",
+      "workflow_type": "baseline_continuation__a0332ba7037ffbbad6ac4155cd2da233709be7d32cb264f994ada93c2cfbf7f7"
+    },
+    {
+      "behavior_family": "continuation-restored-baseline",
+      "definition_digest": "a0332ba7037ffbbad6ac4155cd2da233709be7d32cb264f994ada93c2cfbf7f7",
+      "history": "tests/replay/histories/continuation-baseline-run-4.json",
+      "id": "continuation-baseline-run-4",
+      "worker_build_id": "baseline-1",
+      "worker_deployment": "justflow-replay",
+      "workflow_id": "replay-continuation-baseline",
+      "workflow_type": "baseline_continuation__a0332ba7037ffbbad6ac4155cd2da233709be7d32cb264f994ada93c2cfbf7f7"
+    }
+  ],
+  "format_version": 1
+}

@@ -1,0 +1,363 @@
+{
+  "version": "0.1.0",
+  "policies": {
+    "configuration-authoring": {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "ConfigurationBodies",
+          "Effect": "Allow",
+          "Action": [
+            "s3:GetObject",
+            "s3:PutObject",
+            "s3:DeleteObject"
+          ],
+          "Resource": "arn:aws:s3:::${CONFIGURATION_BUCKET}/${CONFIGURATION_PREFIX}/*"
+        },
+        {
+          "Sid": "ConfigurationMetadata",
+          "Effect": "Allow",
+          "Action": [
+            "dynamodb:ConditionCheckItem",
+            "dynamodb:DeleteItem",
+            "dynamodb:GetItem",
+            "dynamodb:PutItem",
+            "dynamodb:Query",
+            "dynamodb:UpdateItem"
+          ],
+          "Resource": [
+            "arn:aws:dynamodb:${AWS_REGION}:${AWS_ACCOUNT_ID}:table/${CONFIGURATION_TABLE}",
+            "arn:aws:dynamodb:${AWS_REGION}:${AWS_ACCOUNT_ID}:table/${CONFIGURATION_TABLE}/index/*"
+          ]
+        },
+        {
+          "Sid": "ConfigurationEncryption",
+          "Effect": "Allow",
+          "Action": [
+            "kms:Decrypt",
+            "kms:Encrypt",
+            "kms:GenerateDataKey"
+          ],
+          "Resource": "${CONFIGURATION_KMS_KEY_ARN}"
+        },
+        {
+          "Sid": "PublishScopedDefinitions",
+          "Effect": "Allow",
+          "Action": [
+            "s3:GetObject",
+            "s3:PutObject"
+          ],
+          "Resource": "arn:aws:s3:::${DEFINITION_BUCKET}/${DEFINITION_PREFIX}/scopes/${SCOPE_DIGEST}/*"
+        },
+        {
+          "Sid": "ListScopedDefinitions",
+          "Effect": "Allow",
+          "Action": "s3:ListBucket",
+          "Resource": "arn:aws:s3:::${DEFINITION_BUCKET}",
+          "Condition": {
+            "StringLike": {
+              "s3:prefix": [
+                "${DEFINITION_PREFIX}/scopes/${SCOPE_DIGEST}/*"
+              ]
+            }
+          }
+        },
+        {
+          "Sid": "DefinitionEncryption",
+          "Effect": "Allow",
+          "Action": [
+            "kms:Decrypt",
+            "kms:GenerateDataKey"
+          ],
+          "Resource": "${CATALOG_KMS_KEY_ARN}"
+        }
+      ]
+    },
+    "activation-controller": {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "ReadConfigurationAndDefinitions",
+          "Effect": "Allow",
+          "Action": [
+            "s3:GetObject",
+            "s3:ListBucket"
+          ],
+          "Resource": [
+            "arn:aws:s3:::${CONFIGURATION_BUCKET}",
+            "arn:aws:s3:::${CONFIGURATION_BUCKET}/${CONFIGURATION_PREFIX}/*",
+            "arn:aws:s3:::${DEFINITION_BUCKET}",
+            "arn:aws:s3:::${DEFINITION_BUCKET}/${DEFINITION_PREFIX}/*"
+          ]
+        },
+        {
+          "Sid": "PublishDefinitions",
+          "Effect": "Allow",
+          "Action": "s3:PutObject",
+          "Resource": "arn:aws:s3:::${DEFINITION_BUCKET}/${DEFINITION_PREFIX}/*"
+        },
+        {
+          "Sid": "ActivationRecords",
+          "Effect": "Allow",
+          "Action": [
+            "dynamodb:ConditionCheckItem",
+            "dynamodb:DeleteItem",
+            "dynamodb:GetItem",
+            "dynamodb:PutItem",
+            "dynamodb:Query",
+            "dynamodb:UpdateItem"
+          ],
+          "Resource": [
+            "arn:aws:dynamodb:${AWS_REGION}:${AWS_ACCOUNT_ID}:table/${CONFIGURATION_TABLE}",
+            "arn:aws:dynamodb:${AWS_REGION}:${AWS_ACCOUNT_ID}:table/${CONFIGURATION_TABLE}/index/*"
+          ]
+        },
+        {
+          "Sid": "RollWorkerService",
+          "Effect": "Allow",
+          "Action": [
+            "ecs:DescribeServices",
+            "ecs:UpdateService"
+          ],
+          "Resource": "arn:aws:ecs:${AWS_REGION}:${AWS_ACCOUNT_ID}:service/${ECS_CLUSTER}/${APPLICATION_NAME}-worker"
+        },
+        {
+          "Sid": "ReadDeploymentEncryption",
+          "Effect": "Allow",
+          "Action": [
+            "kms:Decrypt",
+            "kms:Encrypt",
+            "kms:GenerateDataKey"
+          ],
+          "Resource": [
+            "${CATALOG_KMS_KEY_ARN}",
+            "${CONFIGURATION_KMS_KEY_ARN}"
+          ]
+        }
+      ]
+    },
+    "gateway": {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "ReadCatalogAndConfigurationBodies",
+          "Effect": "Allow",
+          "Action": [
+            "s3:GetObject",
+            "s3:ListBucket"
+          ],
+          "Resource": [
+            "arn:aws:s3:::${DEFINITION_BUCKET}",
+            "arn:aws:s3:::${DEFINITION_BUCKET}/${DEFINITION_PREFIX}/*",
+            "arn:aws:s3:::${CONFIGURATION_BUCKET}",
+            "arn:aws:s3:::${CONFIGURATION_BUCKET}/${CONFIGURATION_PREFIX}/*"
+          ]
+        },
+        {
+          "Sid": "WriteExecutionEnvironmentSnapshots",
+          "Effect": "Allow",
+          "Action": "s3:PutObject",
+          "Resource": "arn:aws:s3:::${DEFINITION_BUCKET}/${DEFINITION_PREFIX}/scopes/${SCOPE_DIGEST}/environments/*"
+        },
+        {
+          "Sid": "ConfigurationAndActivationMetadata",
+          "Effect": "Allow",
+          "Action": [
+            "dynamodb:ConditionCheckItem",
+            "dynamodb:DeleteItem",
+            "dynamodb:GetItem",
+            "dynamodb:PutItem",
+            "dynamodb:Query",
+            "dynamodb:UpdateItem"
+          ],
+          "Resource": [
+            "arn:aws:dynamodb:${AWS_REGION}:${AWS_ACCOUNT_ID}:table/${CONFIGURATION_TABLE}",
+            "arn:aws:dynamodb:${AWS_REGION}:${AWS_ACCOUNT_ID}:table/${CONFIGURATION_TABLE}/index/*"
+          ]
+        },
+        {
+          "Sid": "IngressAndResponseQueues",
+          "Effect": "Allow",
+          "Action": [
+            "sqs:ChangeMessageVisibility",
+            "sqs:DeleteMessage",
+            "sqs:ReceiveMessage",
+            "sqs:SendMessage"
+          ],
+          "Resource": [
+            "arn:aws:sqs:${AWS_REGION}:${AWS_ACCOUNT_ID}:${TRIGGER_QUEUE}",
+            "arn:aws:sqs:${AWS_REGION}:${AWS_ACCOUNT_ID}:${RESPONSE_QUEUE}",
+            "arn:aws:sqs:${AWS_REGION}:${AWS_ACCOUNT_ID}:${DEAD_LETTER_QUEUE}"
+          ]
+        },
+        {
+          "Sid": "ReadGatewayEncryption",
+          "Effect": "Allow",
+          "Action": [
+            "kms:Decrypt",
+            "kms:Encrypt",
+            "kms:GenerateDataKey"
+          ],
+          "Resource": [
+            "${CATALOG_KMS_KEY_ARN}",
+            "${CONFIGURATION_KMS_KEY_ARN}"
+          ]
+        }
+      ]
+    },
+    "worker": {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "ReadDefinitionsAndConfiguration",
+          "Effect": "Allow",
+          "Action": [
+            "s3:GetObject",
+            "s3:ListBucket"
+          ],
+          "Resource": [
+            "arn:aws:s3:::${DEFINITION_BUCKET}",
+            "arn:aws:s3:::${DEFINITION_BUCKET}/${DEFINITION_PREFIX}/*",
+            "arn:aws:s3:::${CONFIGURATION_BUCKET}",
+            "arn:aws:s3:::${CONFIGURATION_BUCKET}/${CONFIGURATION_PREFIX}/*"
+          ]
+        },
+        {
+          "Sid": "WriteExecutionEnvironmentSnapshots",
+          "Effect": "Allow",
+          "Action": "s3:PutObject",
+          "Resource": "arn:aws:s3:::${DEFINITION_BUCKET}/${DEFINITION_PREFIX}/scopes/${SCOPE_DIGEST}/environments/*"
+        },
+        {
+          "Sid": "ReadConfigurationMetadata",
+          "Effect": "Allow",
+          "Action": "dynamodb:GetItem",
+          "Resource": "arn:aws:dynamodb:${AWS_REGION}:${AWS_ACCOUNT_ID}:table/${CONFIGURATION_TABLE}"
+        },
+        {
+          "Sid": "ApplicationObjectsAndArchives",
+          "Effect": "Allow",
+          "Action": [
+            "s3:DeleteObject",
+            "s3:GetObject",
+            "s3:PutObject"
+          ],
+          "Resource": "arn:aws:s3:::${APPLICATION_DATA_BUCKET}/${APPLICATION_DATA_PREFIX}/*"
+        },
+        {
+          "Sid": "ApplicationState",
+          "Effect": "Allow",
+          "Action": [
+            "dynamodb:DeleteItem",
+            "dynamodb:GetItem",
+            "dynamodb:PutItem"
+          ],
+          "Resource": "arn:aws:dynamodb:${AWS_REGION}:${AWS_ACCOUNT_ID}:table/${APPLICATION_STATE_TABLE}"
+        },
+        {
+          "Sid": "QueueDispatch",
+          "Effect": "Allow",
+          "Action": "sqs:SendMessage",
+          "Resource": "arn:aws:sqs:${AWS_REGION}:${AWS_ACCOUNT_ID}:${REQUEST_QUEUE}"
+        },
+        {
+          "Sid": "ApplicationParameters",
+          "Effect": "Allow",
+          "Action": "ssm:GetParameter",
+          "Resource": "arn:aws:ssm:${AWS_REGION}:${AWS_ACCOUNT_ID}:parameter/${APPLICATION_NAME}/*"
+        },
+        {
+          "Sid": "WorkerEncryption",
+          "Effect": "Allow",
+          "Action": [
+            "kms:Decrypt",
+            "kms:Encrypt",
+            "kms:GenerateDataKey"
+          ],
+          "Resource": [
+            "${CATALOG_KMS_KEY_ARN}",
+            "${CONFIGURATION_KMS_KEY_ARN}",
+            "${APPLICATION_DATA_KMS_KEY_ARN}"
+          ]
+        }
+      ]
+    },
+    "gateway-execution-secret-injection": {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "ReadInjectedSecrets",
+          "Effect": "Allow",
+          "Action": "secretsmanager:GetSecretValue",
+          "Resource": [
+            "${GATEWAY_TEMPORAL_TOKEN_SECRET_ARN}",
+            "${HOST_CREDENTIALS_SECRET_ARN}"
+          ]
+        },
+        {
+          "Sid": "DecryptInjectedSecrets",
+          "Effect": "Allow",
+          "Action": "kms:Decrypt",
+          "Resource": "${SECRETS_KMS_KEY_ARN}"
+        }
+      ]
+    },
+    "worker-execution-secret-injection": {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "ReadInjectedSecrets",
+          "Effect": "Allow",
+          "Action": "secretsmanager:GetSecretValue",
+          "Resource": [
+            "${WORKER_TEMPORAL_TOKEN_SECRET_ARN}",
+            "${APPLICATION_POSTGRES_DSN_SECRET_ARN}",
+            "${APPLICATION_REDIS_URL_SECRET_ARN}"
+          ]
+        },
+        {
+          "Sid": "DecryptInjectedSecrets",
+          "Effect": "Allow",
+          "Action": "kms:Decrypt",
+          "Resource": "${SECRETS_KMS_KEY_ARN}"
+        }
+      ]
+    },
+    "migration-execution-secret-injection": {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "ReadMigrationSecret",
+          "Effect": "Allow",
+          "Action": "secretsmanager:GetSecretValue",
+          "Resource": "${MIGRATION_POSTGRES_DSN_SECRET_ARN}"
+        },
+        {
+          "Sid": "DecryptMigrationSecret",
+          "Effect": "Allow",
+          "Action": "kms:Decrypt",
+          "Resource": "${SECRETS_KMS_KEY_ARN}"
+        }
+      ]
+    }
+  },
+  "eventbridge_sqs_resource_policy": {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "EventBridgeIngress",
+        "Effect": "Allow",
+        "Principal": {
+          "Service": "events.amazonaws.com"
+        },
+        "Action": "sqs:SendMessage",
+        "Resource": "arn:aws:sqs:${AWS_REGION}:${AWS_ACCOUNT_ID}:${TRIGGER_QUEUE}",
+        "Condition": {
+          "ArnEquals": {
+            "aws:SourceArn": "arn:aws:events:${AWS_REGION}:${AWS_ACCOUNT_ID}:rule/${EVENTBRIDGE_RULE}"
+          }
+        }
+      }
+    ]
+  }
+}
